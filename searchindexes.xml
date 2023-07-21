@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>网安学习</title><url>/post/%E7%BD%91%E5%AE%89%E5%AD%A6%E4%B9%A0/</url><categories><category> 网安学习</category></categories><tags/><content type="html"> 网络安全学习路线 一、BurpSuite学习 1、使用浏览器给burp代理，进行拦截，获得数据，然后改文件名字或者MIME，达到符合前后端的过滤要求，等文件成功传输到后端，再用菜刀链接。
+2、用BurpSuite扫描网站可以知道有哪些漏洞
+二、CIFS服务器（类似ftp服务器） 打开cmd，输入\，打开CIFS，输入ip即可
+三、 DHCP部署和安全 DHCP作用（自动分配IP地址） 地址池/作用域：（IP，子网掩码，网关，DNS，租期）， DHCP优点：减少工作量，避免IP冲突，提高地址利用率
+DHCP 协议端口是:UDP 67,68 DHCP原理（DHCP租约过程） 分为4个步骤：
+1）发送DHCP Discovery 广播包 客户机广播请求IP地址（包含客户机的MAC地址）
+2）响应DHCP Offer广播包 服务器响应提供的IP地址（但无子网掩码、网关等参数）
+3）发送DHCP Request广播包 客户机选择IP（也可认为确认使用哪个IP）
+4）服务器发送DHCP ACK 广播包 服务器确定了租约，并提供网卡详细参数IP、掩码，网关、DNS、租期等
+DHCP续约 50%时间过后，客户机会再次发送DHCP Request包，进行续约，如果服务器无响应，则继续使用并在87.5%，再次发送DCHP Request包，进行续约，如X任然无响应，并释放IP地址，及重新发送DHCP Discovery 广播包来获取IP地址，当无任何服务器响应是，自动给自己分配一个169.254.x.x/16，全球统一无效地址，用于临时内网通信！
+部署DHCP服务器 客户机验证：
+ipconfig /release 释放IP（取消租约，或者改为手动配置IP,也可以释放租约） ipconfig /renew 重新获取IP（有IP时，发送Request续约，无IP时，发送Discovery重新获取） 地址保留 对指定的MAC地址，固定动态分配IP地址
+DHCP 攻击与防御 1）攻击DHCP服务器： 频繁的发送伪装DHCP请求，直到将DHCP地址池资源耗尽
+防御：在交换机（管理型）端口上做动态MAC地址绑定
+2）伪装DHCP 服务器攻击： hack通过将自己部署的DHCP服务器，为客户及提供非法IP
+防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>关于进程控制</title><url>/post/custom-files.html</url><categories><category>学习笔记</category><category>进程</category></categories><tags><tag>window</tag><tag>进程</tag><tag>Linux</tag></tags><content type="html"><![CDATA[  Windows的TASKLIST TASKLIST [/S system [/U username [/P [password]]]] [/M [module] | /SVC | /V] [/FI filter] [/FO format] [/NH]
+描述 该工具显示在本地或远程机器上当前运行的进程列表。
+参数列表: /S system 指定连接到的远程系统。 /U &amp;lt;username&amp;gt; 指定应该在哪个用户上下文执行这个命令。 /P 为提供的用户上下文指定密码。如果省略，则 提示输入。 /M 列出当前使用所给 exe/dll 名称的所有任务。如果没有指定模块名称，显示所有加载的模块。 /SVC 显示每个进程中主持的服务。 /V 显示详述任务信息。 /FI 显示一系列符合筛选器指定的标准的任务。 /FO format 指定输出格式。 有效值: &amp;ldquo;TABLE&amp;rdquo;、&amp;ldquo;LIST&amp;rdquo;、&amp;ldquo;CSV&amp;rdquo;。 /NH 指定列标题不应该在输出中显示。 只对 &amp;ldquo;TABLE&amp;rdquo; 和 &amp;ldquo;CSV&amp;rdquo; 格式有效。 /? 显示帮助消息。 示例 若要列出进程 ID 大于 1000 的所有任务，并将它们以 csv 格式显示，请键入：
+tasklist /v /fi &amp;#34;PID gt 1000&amp;#34; /fo csv 若要列出当前正在运行的系统进程，请键入：
+tasklist /fi &amp;#34;USERNAME ne NT AUTHORITY\SYSTEM&amp;#34; /fi &amp;#34;STATUS eq running&amp;#34; 若要列出当前正在运行的所有进程的详细信息，请键入：
+tasklist /v /fi &amp;#34;STATUS eq running&amp;#34; 若要使用用户帐户 Hiropln 的凭据列出远程计算机 srvmain 上的进程，请键入：
+tasklist /s srvmain /u maindom\hiropln /p p@ssW23 Windows的TASKKILL 描述 结束一个或多个任务或进程。 可以通过进程 ID 或图像名称结束进程。 可以使用 tasklist 命令来确定要结束的进程的进程 ID (PID)。
+参数列表 /s …  ]]></content></entry><entry><title>爬取学校官网通知</title><url>/post/%E7%88%AC%E5%8F%96%E5%AD%A6%E6%A0%A1%E5%AE%98%E7%BD%91%E9%80%9A%E7%9F%A5/</url><categories><category>Python</category></categories><tags/><content type="html"><![CDATA[  爬虫开始 首先看到页面呈现规则的各个方框，这意味着它们之间的一定是一样的
+此处该有图
+我们点开后台可以看见属于通知活动的代码中很多这类标签
+&amp;lt;li&amp;gt; &amp;lt;a href=&amp;#34;../info/1042/48792.htm&amp;#34; target=&amp;#34;_blank&amp;#34; title=&amp;#34;关于开展2018届毕业生中期发展评价的通知&amp;#34;&amp;gt; &amp;lt;div class=&amp;#34;box&amp;#34;&amp;gt; &amp;lt;div class=&amp;#34;time&amp;#34;&amp;gt; &amp;lt;div class=&amp;#34;ll&amp;#34;&amp;gt; &amp;lt;img src=&amp;#34;../images/list_box_07_ico.png&amp;#34; alt=&amp;#34;&amp;#34;&amp;gt;2023.06.09 &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;#34;rr&amp;#34;&amp;gt; &amp;lt;img src=&amp;#34;../images/list_box_24_ico.png&amp;#34; alt=&amp;#34;&amp;#34;&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;h5 class=&amp;#34;overfloat-dot-2&amp;#34;&amp;gt;关于开展2018届毕业生中期发展评价的通知&amp;lt;/h5&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/ 那么我们可以分别截取一下几个标签，分别是
+时间标签：&amp;lt;div class=&amp;#34;ll&amp;#34;&amp;gt; 标题标签：&amp;lt;h5 class=&amp;#34;overfloat-dot-2&amp;#34;&amp;gt; 前期工作准备结束了，让我们打开pycharm，引入本次的包
+import requests #经典请求包 from bs4 import BeautifulSoup import pandas as pd #生成xlsx文档包 为了我们的页面的中文正常输出，我们必须对获取的内容进行一个转码
+url = &amp;#39;example.com&amp;#39; + str(page) + &amp;#39;.htm&amp;#39; r = requests.get(url) r.encoding = &amp;#39;utf-8&amp;#39; 我观察到页面的顺序并不是从1往后的，而是从第12页为1.html，第11页 …  ]]></content></entry><entry><title>关于我</title><url>/about.html</url><categories/><tags/><content type="html"> 月白星辰挂长空；萦绕悠扬寂寥风。
+舞琴弄墨各不同；骑马过海踏天虹。
+这个博客会写一些学习心得，和生活随笔。 有时候会很懒，心情也会不固定，时晴时雨，就想写博客记录自己的生活。
+曾经有个笔名叫幻天林少，还写过小说，当时还是太天真了，不过还是算一个能在互联网搜索到的男人了，做一个自己的小小天地，在互联网这个世界中留下自己的印记。
+这个博客开始于2023年5月~~~
+学习c语言快速入门，推荐一个文章：
+https://blog.csdn.net/weixin_46531416/article/details/120171796</content></entry><entry><title>Codebreakers战队 WriteUp</title><url>/post/codebreakers%E6%88%98%E9%98%9F-writeup/</url><categories><category>MISC</category></categories><tags><tag>比赛结果</tag></tags><content type="html"> 排名 战队名称：第225名
+解题思路 1、解压管道压缩包得到一张图片
+2、将图片用StegSolve打开，不断查看图片各个通道，会发现在单色0通道上左上角出现白色条纹，却中间图案非常混杂，即可得知在图片的混杂数据。
+打开analyse的data extract 选择red 0 Column参数，点击Preview
+第一行即出现flag
+flag{098 8f2a657d8936a76876d4f39f7d7a0} 图片文件：
+https://wwcb.lanzouw.com/i9qgI0y5a17i</content></entry><entry><title>ICMP数据报ping命令</title><url>/post/ping%E5%91%BD%E4%BB%A4/</url><categories><category>ICMP</category></categories><tags/><content type="html"> Q: 结合实例“ping www.sina.com ”给出 ping 命令的原理。
+Ping命令是一种常用的网络诊断工具，可以检测主机之间的联通性，测试网络连接速度和带宽使用情况。该命令发送一个数据包到目标主机，然后等待该主机响应，并记录来自目标主机的回复时间和信息，以供分析使用。
+例如，在命令行中运行“ping www.sina.com ”，我们可以看到我们的计算机向新浪网站发送了一个数据包，网站以回复给我们，这里如果想更准确的说明原理，我们需要在网络模型中进行解释，简化地将其分为以下几个步骤：
+应用层：用户在终端设备输入ping命令并按下回车，操作系统通过应用层协议将输入的命令传递给传输层。
+传输层：操作系统通过传输层协议将ping命令和其他必要信息打包成域数据报并发往底层网络。此处一般使用ICMP协议。
+网络层：DNS服务负责将www.sina.com解析为其对应的IP地址，并告诉我们的计算机。
+数据链路和物理层：数据包被转化为数据流，并在网络上通过一系列数据链路和物理层传输，最终抵达目标主机。
+目标主机收到数据包，操作系统将回复包打包成数据帧并通过网络发往我们的计算机。
+返回数据经过数据链路和物理层传输，最终抵达我们的计算机，操作系统将其解析为人们可读的格式并在命令行中输出。
+Ping命令利用了ICMP数据报协议，通过给目标主机发送数据包和等待其回复，来检测网络连接和其他问题的存在，并记录网络性能以供诊断使用。</content></entry><entry><title>ICMP数据报tracert命令</title><url>/post/tracert%E5%91%BD%E4%BB%A4/</url><categories><category>ICMP</category></categories><tags/><content type="html"> Q: 结合实例“tracert www.163.com ”给出 tracert 命令的原理。
+tracert命令是一款常用的网络诊断工具，它可以追踪Internet上从一个起始点到达另一个目的地的路由路径，并显示每个跃点的延迟时间。当我们执行“tracert www.163.com ”的时候，操作系统就会发送一系列的数据包探测从本机到目标地址的路由，其中包括访问的每个信号跳跃点的详细信息。接下来，我将简要介绍一下“tracert”命令的原理。
+应用层：用户在终端设备输入tracert命令并按下回车，操作系统通过应用层协议将输入的命令传递给传输层。
+传输层：操作系统通过传输层协议将tracert命令和其他必要信息打包成域数据报并发往底层网络。此处一般使用ICMP协议。
+网络层：DNS服务负责将www.163.com解析为其对应的IP地址，并告诉我们的计算机。
+数据链路和物理层：数据包被转化为数据流，并在网络上通过一系列数据链路和物理层传输，最终抵达目标主机。
+目标主机收到数据包并返回结果，但是这个时候 tracert 命令不会停止工作；删除不在路由路径中的信息，并继续向远程主机发送数据包。当跃点信息关于目标系统返回时，则显示到终端上。
+返回数据经过数据链路和物理层传输，最终抵达我们的计算机，操作系统将其解析为人们可读的格式并在命令行中输出。
+总之，“tracert”命令利用ICMP协议特别设计的“时间超时”机制，通过发送数据包，跟踪这些数据包经过的每个路由器，最终确定到达目标地址所需的最佳路线。逐级探测路由器的原理是基于TTL值（Time to Live），它告诉路由跳出期限已过期的报文需要被丢弃。该信息源于每个传输包中的IP头部，一开始被设定成一定的值，中转节点的路由器在收到此类数据包后，会减1并再次转发给下一跃点，这样每一个中转节点就会更新TTL值，直到最后一个到达目的地址。这些来回传输的数据包的交互过程显示了网络连接的性能和路由可能出现的问题，帮助管理员更好地诊断和修复网络问题。</content></entry><entry><title>ICMP数据报Identifier中BE和LE的区别</title><url>/post/icmp%E6%95%B0%E6%8D%AE%E6%8A%A5/</url><categories><category>ICMP</category></categories><tags/><content type="html"> Q: 在icmp数据报中的标识符 Identifier (BE): 512 (0x0200) Identifier (LE): 2 (0x0002)这两个标识符有什么区别，有什么用，说个例子解释一下
+这两个标识符都是 ICMP 报文中的标识符字段，用于标识发送方发送的 ICMP 报文。区别在于 BE 和 LE 分别代表大端序和小端序，即字节序的不同。
+在网络通信中，不同的计算机可能使用不同的字节序，因此需要在传输数据时进行字节序的转换，以保证数据的正确性。在 ICMP 报文中，标识符字段是一个 16 位的无符号整数，因此需要在传输时进行字节序的转换。
+例如，当一个大端序的计算机向一个小端序的计算机发送 ICMP 报文时，标识符字段需要进行字节序的转换，将 BE 的值 512 转换为 LE 的值 2。这样接收方才能正确地识别发送方发送的 ICMP 报文。
+总之，标识符字段的作用是用于标识发送方发送的 ICMP 报文，而 BE 和 LE 则是用于表示不同字节序的标识符值，以保证数据在网络传输中的正确性。</content></entry><entry><title>Linux自启动方式</title><url>/post/linux%E8%87%AA%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F/</url><categories><category>Linux</category></categories><tags/><content type="html"> 在Linux中，有多种方式可以设置开机自启动。以下是几种常见的方式：
+使用init.d或rc.d脚本：在/etc/init.d/或/etc/rc.d/目录中，你可以创建一个启动脚本，并使用特定的命名约定（如以&amp;quot;S&amp;quot;开头并在其后跟一个数字来定义启动顺序）。这些脚本将在系统引导过程中自动执行。例如，你可以将启动脚本放在/etc/init.d/myscript，然后使用以下命令将其添加到启动过程中：
+sudo chmod +x /etc/init.d/myscript sudo update-rc.d myscript defaults 使用systemd服务：systemd是用于管理系统进程和服务的初始化系统。你可以创建一个自定义的systemd服务单元文件，将其放置在/etc/systemd/system/目录中，并使用systemctl命令启用它。例如，你可以创建一个名为myservice.service的服务单元文件，然后使用以下命令启用它：
+sudo systemctl enable myservice.service 使用cron作业：cron是Linux系统中的定时任务管理器。你可以编辑cron表以指定在系统引导时运行的命令或脚本。使用crontab -e命令编辑当前用户的cron表，并添加一个@reboot行来指定在系统引导时执行的命令。例如：
+@reboot /path/to/myscript.sh 请注意，以上这些方法可能在不同的Linux发行版中略有差异。因此，你可能需要根据你所使用的特定发行版进行适当的调整。</content></entry><entry><title>图解HTTP</title><url>/post/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/</url><categories><category>HTTP</category></categories><tags/><content type="html"> 图解HTTP HTTP协议的职责（客户端） 生成针对目标web服务器的HTTP请求报文
+TCP协议的职责（客户端） 为了方便通信，将HTTP请求报文分割成报文段按序号分成多个报文段，把每个报文段可靠地传给对方
+IP协议的职责（路由器） 搜索对方的地址，一边中转一边传送
+TCP协议的职责（服务器） 从对方接受到的报文段按序号以原来的顺序重组请求报文
+HTTP协议的职责（服务器） 对web服务器请求的内容处理 ，请求的处理结果按照TCP/IP通信协议向用户进行回传
+URL（Uniform Resource Identifier） 某个协议方案表示的资源的定位标识符
+Uniform 规定统一的格式可方便处理多种不同类型的资源，而不用根据上下文环境来识别资源指定的访问方式。另外加入新的协议方案如:http、ftp也容易
+Resource 资源定义是可标识的如何东西。资源不仅仅是单一的，也可以是多数的集合体。
+Identifier 表示可标识的对象，也称为标识符
+告知服务器意图的HTTP方法 GET 获得资源，get方法用来请求访问已被URI识别的资源
+POST 用来传输实体的主体，虽然GET方法也可以传输实体的主体，但一般不用GET方法进行传输，而是用post
+PUT 传输文件，就像ftp协议的文件上传，要求请求报文的主体中包含文件内容，然后保存在请求URI指定的位置。但是鉴于HTTP/1.1的PUT自身不带有验证机制，任何人都能上传，存在安全问题，因此一般web网站不采用这种方法
+HEAD HEAD方法和GET方法一样，只是不返回报文主体，用于确认URI的有效性及资源更新的日期时间等
+DELETE 和PUT相反的方法，但一般网站不带有验证机制，所以也不使用该方法，当配合web应用程序的验证机制，或遵守REST标准时还是有可能开放使用（PUT同）
+OPTIONS 用来查询针对请求URI指定的资源支持的方法
+“你支持什么方法”“支持GET和HEAD方法”
+TRACE 追踪路径，让web服务器端将之前的请求通信环回给客户端的方法。但是TRACE方法本来不怎么常用，再加上它容易引发XST（Cross Site Tracing,跨站追踪）攻击，通常更不会使用了。
+CONNECT 要求使用隧道协议连接代理。要求在与代理服务器通信时建立隧道，实现隧道协议进行TCP通信。主要使用SSL（ …</content></entry><entry><title>Vue项目学习</title><url>/post/vue%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url><categories><category>Vue</category></categories><tags/><content type="html"><![CDATA[  Vue学习笔记 一、二维数组尝试 var vm = new Vue({ el: &#34;#app&#34;, data: { huilv:[ [6.8540, 132.9787, 1298.7013, 1.3278], [6.8540, 132.9787, 1298.7013, 1.3278] ],} 二、watch监听实现 watch: { first: function(newValue) { this.second = newValue * this.huilv[Number(this.firstbutton - 1)][Number(this.secondbutton -1)]; }, second: function(newValue) { this.first = newValue / this.huilv[Number(this.firstbutton - 1)][Number(this.secondbutton -1)]; } } 三、数组的更新检测 #变更方法 Vue 将被侦听的数组的变更方法进行了包裹，所以它们也将会触发视图更新。这些被包裹过的方法包括：
+push() pop() shift() unshift() splice() sort() reverse() 你可以打开控制台，然后对前面例子的 items 数组尝试调用变更方法。比如 example1.items.push({ message: 'Baz' })。
+四、链接数据库 页面调用路由表的函数
+getmessage() { const self = this; self.$http.post(&#39;/api/user/getchat&#39;).then(function(response) { console.log(response.data); self.messages = response.data; }).catch(function(error) { console.log(error); }); }, 路由表内的接口
+router.post(&#39;/getchat&#39;, (req, res) =&gt; { const sql = $sql.userchat.getmessage; conn.query(sql, (err, result) =&gt; { if (err) { console.log(err); res.json({ success: false, message: &#39;Database error occurred.&#39; }); return; } console.log(result); // 在控制台上打印查找到的结果 res.json(result); // 将查询结果返回给客户端 }); });   ]]></content></entry><entry><title>友情链接</title><url>/flinks.html</url><categories/><tags/><content type="html"></content></entry></search>
