@@ -47,6 +47,7 @@ url = &amp;#39;example.com&amp;#39; + str(page) + &amp;#39;.htm&amp;#39; r = req
 这个博客开始于2023年5月~~~
 学习c语言快速入门，推荐一个文章：
 https://blog.csdn.net/weixin_46531416/article/details/120171796</content></entry><entry><title>Codebreakers战队 WriteUp</title><url>/post/Codebreakers%E2%80%99sWriteUp.html</url><categories><category>CTF</category></categories><tags><tag>比赛结果</tag></tags><content type="html"> 排名 战队名称：第225名
+]
 解题思路 1、解压管道压缩包得到一张图片
 2、将图片用StegSolve打开，不断查看图片各个通道，会发现在单色0通道上左上角出现白色条纹，却中间图案非常混杂，即可得知在图片的混杂数据。
 打开analyse的data extract 选择red 0 Column参数，点击Preview
