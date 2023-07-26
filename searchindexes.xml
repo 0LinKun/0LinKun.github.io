@@ -36,11 +36,11 @@ tasklist /v /fi &amp;#34;STATUS eq running&amp;#34; 若要使用用户帐户 Hir
 tasklist /s srvmain /u maindom\hiropln /p p@ssW23 Windows的TASKKILL 描述 结束一个或多个任务或进程。 可以通过进程 ID 或图像名称结束进程。 可以使用 tasklist 命令来确定要结束的进程的进程 ID (PID)。
 参数列表 /s …  ]]></content></entry><entry><title>爬取学校官网通知</title><url>/post/%E7%88%AC%E5%8F%96%E5%AD%A6%E6%A0%A1%E5%AE%98%E7%BD%91%E9%80%9A%E7%9F%A5/</url><categories><category>python</category><category>爬虫</category></categories><tags/><content type="html"><![CDATA[  爬虫开始 首先看到页面呈现规则的各个方框，这意味着它们之间的一定是一样的
 此处该有图
-我们点开后台可以看见属于通知活动的代码中很多这类标签
+我们点开后台可以看见属于通知活动的代码中很多这类”li“标签
 &amp;lt;li&amp;gt; &amp;lt;a href=&amp;#34;../info/1042/48792.htm&amp;#34; target=&amp;#34;_blank&amp;#34; title=&amp;#34;关于开展2018届毕业生中期发展评价的通知&amp;#34;&amp;gt; &amp;lt;div class=&amp;#34;box&amp;#34;&amp;gt; &amp;lt;div class=&amp;#34;time&amp;#34;&amp;gt; &amp;lt;div class=&amp;#34;ll&amp;#34;&amp;gt; &amp;lt;img src=&amp;#34;../images/list_box_07_ico.png&amp;#34; alt=&amp;#34;&amp;#34;&amp;gt;2023.06.09 &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;#34;rr&amp;#34;&amp;gt; &amp;lt;img src=&amp;#34;../images/list_box_24_ico.png&amp;#34; alt=&amp;#34;&amp;#34;&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;h5 class=&amp;#34;overfloat-dot-2&amp;#34;&amp;gt;关于开展2018届毕业生中期发展评价的通知&amp;lt;/h5&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/ 那么我们可以分别截取一下几个标签，分别是
 时间标签：&amp;lt;div class=&amp;#34;ll&amp;#34;&amp;gt; 标题标签：&amp;lt;h5 class=&amp;#34;overfloat-dot-2&amp;#34;&amp;gt; 前期工作准备结束了，让我们打开pycharm，引入本次的包
 import requests #经典请求包 from bs4 import BeautifulSoup import pandas as pd #生成xlsx文档包 为了我们的页面的中文正常输出，我们必须对获取的内容进行一个转码
-url = &amp;#39;example.com&amp;#39; + str(page) + &amp;#39;.htm&amp;#39; r = requests.get(url) r.encoding = &amp;#39;utf-8&amp;#39; 我观察到页面的顺序并不是从1往后的，而是从第12页为1.html，第11页 …  ]]></content></entry><entry><title>关于我</title><url>/about.html</url><categories/><tags/><content type="html"> 月白星辰挂长空；萦绕悠扬寂寥风。
+url = &amp;#39;example.com&amp;#39; + str(page) + &amp;#39;.htm&amp;#39; r = requests.get(url) r.encoding = &amp;#39;utf-8&amp;#39; 我观察到页面的顺序并不是从1往后的，而是从第12页为1.html， …  ]]></content></entry><entry><title>关于我</title><url>/about.html</url><categories/><tags/><content type="html"> 月白星辰挂长空；萦绕悠扬寂寥风。
 舞琴弄墨各不同；骑马过海踏天虹。
 这个博客会写一些学习心得，和生活随笔。 有时候会很懒，心情也会不固定，时晴时雨，就想写博客记录自己的生活。
 曾经有个笔名叫幻天林少，还写过小说，当时还是太天真了，不过还是算一个能在互联网搜索到的男人了，做一个自己的小小天地，在互联网这个世界中留下自己的印记。
