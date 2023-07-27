@@ -13,7 +13,21 @@ ipconfig /release 释放IP（取消租约，或者改为手动配置IP,也可以
 DHCP 攻击与防御 1）攻击DHCP服务器： 频繁的发送伪装DHCP请求，直到将DHCP地址池资源耗尽
 防御：在交换机（管理型）端口上做动态MAC地址绑定
 2）伪装DHCP 服务器攻击： hack通过将自己部署的DHCP服务器，为客户及提供非法IP
-防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>Nmap学习使用</title><url>/post/Nmapstudy.html</url><categories><category>网安学习</category><category>Nmap</category></categories><tags><tag>网安学习</tag><tag>Nmap</tag></tags><content type="html"> 介绍 Nmap (Network Mapper) 是一个开源的网络扫描工具，用于发现主机和服务，并识别网络上的开放端口。它广泛用于网络管理员、安全专家和黑客等领域。Nmap提供了丰富的功能和参数，使其成为一种功能强大的网络探测工具。
+防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>Web 攻防原理剖析</title><url>/post/Studyweb.html</url><categories><category>网安学习</category><category>Web</category></categories><tags><tag>window</tag><tag>Web</tag><tag>网络安全</tag></tags><content type="html"><![CDATA[  学习目标
+掌握 SQL、XXE 注入漏洞的原理与实践
+掌握文件包含漏洞的原理与防御方法
+理解命令执行漏洞与防御
+掌握 XSS 漏洞原理与防御
+掌握 CSRF 与 SSRF 请求伪造漏洞原理与防御
+掌握任意文件上传与任意文件读取漏洞
+掌握逻辑漏洞中的越权漏洞
+掌握反序列化漏洞攻击与防御 Web 安全中有很多需要了解或掌握的安全漏洞，这些漏洞在实战中也经常会出现，如 SQL 注入漏洞、XXE XML 实体注入、文件包含漏洞、命令执行漏洞，以及 XSS、CSRF、SSRF、文件上传、文件下载、反序列化、业务逻辑等漏洞的相关安全知识，下面要开始踏入 Web 攻防原理剖析的学习日程了。
+1 文件上传漏洞 1.1 漏洞简介 现代互联网的 Web 应用程序中，上传文件是一种常见的功能，因为它有助于提高业务效率，如企业的 OA 系统，允许用户上传图片、视频、头像和许多其他类型的文件。然而向用户提供的功能越多，Web 应用受到攻击的风险就越大，如果 Web 应用存在文件上传漏洞，那么恶意用户就可以利用文件上传漏洞将可执行脚本程序（WebShell）上传到服务器中，获得网站的权限，然后可以进一步对服务器进行入侵，扩大控制权限。
+1.2 漏洞利用 非法用户可以利用上传的恶意脚本文件控制整个网站，甚至服务器。这个恶意的脚本文件，又被称为 WebShell，是以 ASP、PHP、JSP 等网页设计语言编写的网页脚本，通常也叫作网页后门。攻击者在入侵了一个网站后，常会将 WebShell 上传到网站的目录下或者插入正常的网页中，然后使用浏览器或者对应的 WebShell 客户端来访问这些后门，将会得到一个命令执行的环境，以达到控制网站服务器的目的。 各个脚本语言经典的 WebShell 如下
+1.2.1 ASP 密码为 x 的 asp 一句话木马：
+&lt;%eval request(&#34;x&#34;)%&gt; &lt;%execute request(&#34;x&#34;)%&gt; 1.2.2 ASPX 密码为 x 的 aspx 一句话木马：
+&lt;%@ Page Language=&#34;Jscript&#34;%&gt; &lt;%eval(Request.Item[&#34;x&#34;],&#34;unsafe&#34;);%&gt; 1.2.3 PHP 密码为 x 的 php 一句话木马：
+&lt;?php eval($_POST[’x’])?&gt; &lt;?php …  ]]></content></entry><entry><title>Nmap学习使用</title><url>/post/Nmapstudy.html</url><categories><category>网安学习</category><category>Nmap</category></categories><tags><tag>网安学习</tag><tag>Nmap</tag></tags><content type="html"> 介绍 Nmap (Network Mapper) 是一个开源的网络扫描工具，用于发现主机和服务，并识别网络上的开放端口。它广泛用于网络管理员、安全专家和黑客等领域。Nmap提供了丰富的功能和参数，使其成为一种功能强大的网络探测工具。
 底层原理 Nmap是用C和Lua两种编程语言编写的。
 C语言：Nmap的核心功能是用C语言编写的。C语言为Nmap提供了高效的性能和跨平台的特性，使其能在各种操作系统上运行。 Lua脚本语言：Nmap引入了Lua作为脚本语言，用于编写自定义脚本和扩展功能。通过Lua脚本，用户可以实现更多自定义的扫描和探测行为，充分利用Nmap强大的网络探测能力。 使用方法 nmap [扫描目标] [参数] 示例 扫描单个主机： nmap 192.168.0.1 扫描多个主机： nmap 192.168.0.1 192.168.0.2 192.168.0.3 扫描整个子网： nmap 192.168.0.0/24 扫描特定端口： nmap -p 80 192.168.0.1 扫描常见端口： nmap -F 192.168.0.1 参数 基本扫描选项： -sS：TCP SYN 扫描（默认）。 -sT：TCP connect 扫描。 -sU：UDP 扫描。 -sF：FIN 扫描。 -sX：Xmas 树扫描。 -sP：Ping 扫描，用于检测目标主机是否在线。 端口扫描选项： -p ：指定要扫描的端口范围，可以是单个端口或连续端口范围。例如：-p 80 或 -p 1-100. -F：快速扫描，仅扫描常见端口。 输出选项： -oN ：以正常格式将结果输出到文件。 -oX ：以XML格式将结果输出到文件。 -oG ：以Grepable格式将结果输出到文件。 服务/版本探测选项： -sV：探测服务和版本信息。 操作系统探测选项： -O：尝试猜测目标操作系统类型。 路径追踪（Traceroute）选项： --traceroute：路径追踪功能。 脚本扫描选项： -sC：使用默认脚本进行扫描。 --script=：指定要使用的脚本。 防火墙/IDS逃避选项： -f：分片扫描。 -D ：伪装成多个IP以逃避防火墙/IDS。 并行扫描选项： -T&amp;amp;lt;0-5&amp;amp;gt;：设置扫描速度/时间延迟。例如：-T4 表示普通扫描。 其他选项： -v：详细模式，显示更多输出信息。 …</content></entry><entry><title>SQLMAP学习使用</title><url>/post/sqlmapstudy.html</url><categories><category>网安学习</category><category>sqlmap</category></categories><tags><tag>网安学习</tag><tag>sqlmap</tag></tags><content type="html"><![CDATA[  SQL描述 SQLMap是一款开源的渗透测试工具，主要用于检测和利用SQL注入漏洞。它是由Burp Suite工具的开发者Bernardo Damele和Miroslav Stampar创建的，并在Python语言下开发。SQL注入是一种常见的网络应用程序漏洞，通过此漏洞，攻击者可以在应用程序的数据库中执行恶意的SQL查询，从而获取敏感数据、修改数据或者对数据库进行非授权的访问
 语言：python

