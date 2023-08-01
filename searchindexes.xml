@@ -13,7 +13,20 @@ ipconfig /release 释放IP（取消租约，或者改为手动配置IP,也可以
 DHCP 攻击与防御 1）攻击DHCP服务器： 频繁的发送伪装DHCP请求，直到将DHCP地址池资源耗尽
 防御：在交换机（管理型）端口上做动态MAC地址绑定
 2）伪装DHCP 服务器攻击： hack通过将自己部署的DHCP服务器，为客户及提供非法IP
-防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>使用hugo框架创建个人博客</title><url>/post/hugostudy.html</url><categories><category>个人博客</category><category>hugo</category></categories><tags><tag>个人博客</tag><tag>hugo</tag></tags><content type="html"><![CDATA[  一、配置环境 https://github.com/gohugoio/hugo/releases 下载window版本的hugo(如果该版本不属于你的window操作系统则下载最下面一行的hugo_extended_0.116.0_windows-amd64.zip这一个资源文件)
+防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>关于数据库的学习和拓展</title><url>/post/RDBMS%E5%92%8Cnosql%E7%9A%84%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%89%A9%E5%B1%95.html</url><categories><category>数据库</category></categories><tags><tag>数据库</tag><tag>SQL</tag><tag>分布式</tag><tag>区块链</tag></tags><content type="html"> 数据库简介 数据库是数据管理的重要技术，也是计算机的重要分支。
+数据库管理系统是一种操纵和管理数据库的大型软件，用于建立、使用和维护数据库，简称 DBMS。
+根据存储模型可将数据库划分为关系型数据库和非关系型数据.。
+简单来说，关系模型指的就是二维表格模型，而一个关系型数据库就是由二维表及其之间的联系所组成的一个数据组织。标准数据查询语言 SQL 就是一种基于关系数据库的语言，这种语言执行对关系数据库中数据的检索和操作。
+关系型数据库 Oracle：甲骨文开发的商业数据库，不开源，支持所有主流平台，性能好，功能强，稳定性好，安全性好，支持大数据量，比较复杂，收费昂贵。
+SQL Server：微软开发的商业数据库，只能在 Windows 运行。
+MySQL：甲骨文拥有的开源数据库，支持多种操作系统，体积小，功能弱些，简单的操作性能好，复杂的操作性能差些。
+PostgreSQL：使用 BSD 协议的完全开源免费的项目，支持多种操作系统，功能更强大，可以和多种开源工具配合。
+SQLite：开源、轻型、无服务器、零配置，一个数据库就只是一个文件，在应用程序内执行操作，占用资源小，可用于嵌入式或小型应用。
+Microsoft Access、Sybase
+应用场景 Oracle 多用于银行等高要求的领域，要求不高的比如互联网行业多用 MySQL 和 PostgreSQL，而 SQLite 用于嵌入式或作为应用程序内的数据库使用，SQL Server 用于 Window 服务器。相比于 SQL Server这样的企业级数据库管理系统，Microsoft Access更适合用于个人或小团队的本地数据库需求。适用于多种企业级应用和数据存储需求。Sybase具有高性能、可靠性和扩展性的特点，适合处理大规模和复杂的数据，被广泛用于各种行业和领域。
+非关系型数据库 ​ 非关系型数据库是分布式的、非关系型的、不保证遵循ACID原则的数据存储系统。NoSQL最常见的解释是“non-relational”，“Not Only SQL”也被很多人接受。流行的NoSQL数据库有Couchbase，MongoDB，Redis，BigTable和RavenDB。
+它们通常不使用固定的表格结构和SQL语言。非关系型数据库适用于需要处理大规模和动态的数据集合，以及需要更高的可伸缩性和性能的场景。
+以下是一些 …</content></entry><entry><title>使用hugo框架创建个人博客</title><url>/post/hugostudy.html</url><categories><category>个人博客</category><category>hugo</category></categories><tags><tag>个人博客</tag><tag>hugo</tag></tags><content type="html"><![CDATA[  一、配置环境 https://github.com/gohugoio/hugo/releases 下载window版本的hugo(如果该版本不属于你的window操作系统则下载最下面一行的hugo_extended_0.116.0_windows-amd64.zip这一个资源文件)
 配置系统环境，可以在电脑所有文件夹使用hugo.exe
 通过输入命令让hugo框架快速建立博客
 hugo new site mysite mysite文件夹内部结构（当前文件夹仍然是空白博客，只是有了一个框架）：
