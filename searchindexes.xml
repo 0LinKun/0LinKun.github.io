@@ -13,7 +13,74 @@ ipconfig /release 释放IP（取消租约，或者改为手动配置IP,也可以
 DHCP 攻击与防御 1）攻击DHCP服务器： 频繁的发送伪装DHCP请求，直到将DHCP地址池资源耗尽
 防御：在交换机（管理型）端口上做动态MAC地址绑定
 2）伪装DHCP 服务器攻击： hack通过将自己部署的DHCP服务器，为客户及提供非法IP
-防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>域外高人世界</title><url>/post/000.html</url><categories><category>前辈</category></categories><tags/><content type="html"> CS自学指南 学习c语言快速入门 学习网络攻防原理 计算机基础 这里是计算机基础知识的总结 算法刷题 总结网站 # 前端面试指南 面试总结 前端进阶 被删的前端游乐场 互联网大厂面试每日一题 # JavaScript 后盾人 学习路线 JavaScript专题系列20篇正式完结！ (建议收藏)原生JS灵魂之问, 请问你能接得住几个？(上) 神三元 LinDaiDai_霖呆呆 冴羽 Sunshine_Lin # 执行上下文/作用域/闭包/this 【译】理解 Javascript 执行上下文和执行栈 我从来不理解JavaScript闭包，直到有人这样向我解释它&amp;hellip; 【建议👍】再来40道this面试题酸爽继续(1.2w字用手整理) JavaScript进阶-执行上下文栈和变量对象(一周一更) # 对象/原型链/继承 详解JS原型链与继承 最详尽的 JS 原型与原型链终极详解，没有「可能是」。 💦【何不三连】做完这48道题彻底弄懂JS继承(1.7w字含辛整理-返璞归真) 读书笔记之创建对象 JavaScript常用八种继承方案 # event loop 深入理解 JavaScript Event Loop 一次弄懂Event Loop（彻底解决此类面试问题） 浏览器与Node的事件循环(Event Loop)有何区别? # js其他知识点 你真的理解事件冒泡和事件捕获吗？ # ES6 阮一峰大佬的博客 ES6、ES7、ES8特性一锅炖(ES6、ES7、ES8学习指南) 近一万字的ES6语法知识点补充 1.5万字概括ES6全部特性(已更新ES2020) 🎉喜大普奔，ES2019登场 ES6 完全使用手册 ES9已经来了 Are you ready? # 浏览器原理 渲染机制 (1.6w字)浏览器灵魂之问，请问你能接得住几个？ 前端开发的你应该知道的浏览器知识 傻傻分不清之 Cookie、Session、Token、JWT 从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理 # 面试算法刷题 codeTop</content></entry><entry><title>tostring和getbytes不能一起使用</title><url>/post/tostring%E5%92%8Cgetbytes%E4%B8%8D%E8%83%BD%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8.html</url><categories><category>java</category><category>tostring</category></categories><tags><tag>java</tag><tag>tostring</tag></tags><content type="html"> 问题 a.equals(a.getBytes().toString()为什么是false
+防御：在交换机上（管理型），除合法的DHCP服务器所在的接口外，全部设置为禁止发送DHCP …</content></entry><entry><title>域外高人世界</title><url>/post/000.html</url><categories><category>前辈</category></categories><tags/><content type="html"> CS自学指南 学习c语言快速入门 学习网络攻防原理 计算机基础 这里是计算机基础知识的总结 算法刷题 总结网站 # 前端面试指南 面试总结 前端进阶 被删的前端游乐场 互联网大厂面试每日一题 # JavaScript 后盾人 学习路线 JavaScript专题系列20篇正式完结！ (建议收藏)原生JS灵魂之问, 请问你能接得住几个？(上) 神三元 LinDaiDai_霖呆呆 冴羽 Sunshine_Lin # 执行上下文/作用域/闭包/this 【译】理解 Javascript 执行上下文和执行栈 我从来不理解JavaScript闭包，直到有人这样向我解释它&amp;hellip; 【建议👍】再来40道this面试题酸爽继续(1.2w字用手整理) JavaScript进阶-执行上下文栈和变量对象(一周一更) # 对象/原型链/继承 详解JS原型链与继承 最详尽的 JS 原型与原型链终极详解，没有「可能是」。 💦【何不三连】做完这48道题彻底弄懂JS继承(1.7w字含辛整理-返璞归真) 读书笔记之创建对象 JavaScript常用八种继承方案 # event loop 深入理解 JavaScript Event Loop 一次弄懂Event Loop（彻底解决此类面试问题） 浏览器与Node的事件循环(Event Loop)有何区别? # js其他知识点 你真的理解事件冒泡和事件捕获吗？ # ES6 阮一峰大佬的博客 ES6、ES7、ES8特性一锅炖(ES6、ES7、ES8学习指南) 近一万字的ES6语法知识点补充 1.5万字概括ES6全部特性(已更新ES2020) 🎉喜大普奔，ES2019登场 ES6 完全使用手册 ES9已经来了 Are you ready? # 浏览器原理 渲染机制 (1.6w字)浏览器灵魂之问，请问你能接得住几个？ 前端开发的你应该知道的浏览器知识 傻傻分不清之 Cookie、Session、Token、JWT 从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理 # 面试算法刷题 codeTop</content></entry><entry><title>PHP代码审计危险函数</title><url>/post/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0.html</url><categories><category>PHP</category></categories><tags><tag>PHP</tag><tag>代码审计</tag></tags><content type="html"><![CDATA[   yes 需要(打印函数需要打印出来) no 不需要
+文件类型操作
+file() 函数读取整个文件
+fgets() 读取一行数据
+fgetc() 读取一个字符
+fwrite()函数 可以进行文件写入操作
+file_put_contentt()函数 可以对文件进行写入操作
+file_get_contents()函数 可以进行读取文件 yes
+unlink() 函数 进行文件的删除
+rmdir() 直接删除一个目录
+tempanam() 创建一个临时文件
+tmofile() 创建一个临时文件
+fopen() 函数 打开或者远程读取一个url
+readfile() 输出一个文件
+fread() 读取里面文件，no
+rename 重命名一个文件
+fputs 文件上传类似于fwrite
+其他
+目录遍历
+opendir()
+readdir()
+closedir()
+函数都会导致一个目录遍历 命令执行函数
+exec() 函数 执行命令 yes
+system() 函数 no
+shell_exec() 函数 执行命令 yes
+passthru()函数 执行命令类似于exec no
+preg_replace()函数 执行命令但是需要/e模式
+escapeshellcmd()函数
+popen() 此函数需要写入一个文本当中 <?php popen( 'whoami >> D:/1.txt', 'r' ); ?>
+proc_open()
+pcntl_exec() 也是写入一个文件当中pcntl_exec( &ldquo;/bin/bash&rdquo; , array(&ldquo;whoami&rdquo;));
+create_funtion()
+array_map()
+文件包含
+require()
+include()
+require_once()
+include_once()
+SSRF漏洞
+curl_exec()
+file_get_content() 在内容当中参数可控可以进行SSRF漏洞读取
+fopen()
+fsockopen()
+$fp = fsockopen(shost,intval(Sport),serrno,serrstr,30): //打开一个网络连接或者一个unix套接字连接 ​
+变量覆盖
+$$ 反序列化
+unserialize反序列化函数，参数可控，存在可利用类和魔术方法
+serialize
+文件下载
+header(&lsquo;Content-Disposition: attachment; filename=&rsquo;.$filename); URL跳转
+header(&ldquo;Location: http://www.baidu.com &rdquo;) XML外部实体加载
+PHP XML解析函数
+simplexml_load_file
+simplexml_load_string
+SimpleXMLElement
+DOMDocument
+xml_parse
+正则表达式小技巧
+file_get_contents($this-&gt;([a-zA-Z0-9]+)
+适用于pop链分析
+文件上传
+$_file[&lsquo;file&rsquo;] [&rsquo;name&rsquo;] 客户端上传的原名称
+$_file[&lsquo;file&rsquo;] [&rsquo;type&rsquo;] 文件·类型
+$_file[&lsquo;file&rsquo;] [&lsquo;size&rsquo;] 文件大小
+$_file[&lsquo;file&rsquo;] [&rsquo;tmp_name&rsquo;] 文件上传之后在服务器临时存储的名称
+$_file[&lsquo;file&rsquo;] [&rsquo;error&rsquo;] 上传之后产生的错误代码
+最终 move_upload_file 进行文件移动   ]]></content></entry><entry><title>tostring和getbytes不能一起使用</title><url>/post/tostring%E5%92%8Cgetbytes%E4%B8%8D%E8%83%BD%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8.html</url><categories><category>java</category><category>tostring</category></categories><tags><tag>java</tag><tag>tostring</tag></tags><content type="html"> 问题 a.equals(a.getBytes().toString()为什么是false
 解答 a.equals(a.getBytes().toString()) 这一表达式返回 false 的原因是 equals() 方法在比较字符串时，不仅比较字符本身，还会比较两个字符串的内部表示，包括它们在内存中的地址和字节编码。
 a.getBytes()：这一部分将字符串 a 转换为一个字节数组。默认情况下，它会使用系统的默认字符集（例如 UTF-8）来转换字符串。 .toString()：这一部分将字节数组转换为一个字符串。在 Java 中，字节数组默认使用 [B 格式化为字符串。 a.equals(...)：这一部分使用 equals() 方法比较两个字符串。在比较时，它不仅会比较字符串的字符内容，还会比较它们的内部表示，包括它们在内存中的地址和字节编码。 由于 a.getBytes() 和 a.toString() 的行为是不同的，所以它们产生的结果也是不同的。具体来说，a.getBytes() 返回的是根据默认字符集编码的字节数组，而 a.toString() 返回的是字节数组的默认表示（即 [B）。因此，即使这两个操作的结果在视觉上看起来相同，它们实际上并不相等。
 要使表达式 a.equals(a.getBytes().toString()) 返回 true，你需要使用与 getBytes() 相同的方式来转换字符串：
